@@ -187,6 +187,9 @@ importers:
       '@fastify/env':
         specifier: ^4.0.0
         version: 4.4.0
+      '@netthouse/db':
+        specifier: workspace:*
+        version: link:../../packages/db
       drizzle-orm:
         specifier: ^0.40.0
         version: 0.40.1(gel@2.2.1)(postgres@3.4.9)

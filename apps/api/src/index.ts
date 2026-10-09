@@ -1,9 +1,19 @@
 import Fastify from "fastify";
 import cors from "@fastify/cors";
+import { z } from "zod";
+import { db } from "@netthouse/db";
+import { organizations } from "@netthouse/db";
+import { eq } from "drizzle-orm";
 
 const server = Fastify({ logger: true });
 
 await server.register(cors, { origin: true });
+
+// Schema for creating an organization
+const createOrgSchema = z.object({
+  name: z.string().min(1).max(200),
+  slug: z.string().min(1).max(100).regex(/^[a-z0-9-]+$/),
+});
 
 server.get("/health", async () => {
   return { status: "ok", service: "netthouse-api", time: new Date().toISOString() };
@@ -11,6 +21,36 @@ server.get("/health", async () => {
 
 server.get("/", async () => {
   return { name: "Netthouse API", version: "0.1.0" };
+});
+
+server.get("/organizations", async () => {
+  const allOrgs = await db.select().from(organizations);
+  return { organizations: allOrgs };
+});
+
+server.post("/organizations", async (request, reply) => {
+  const parsed = createOrgSchema.safeParse(request.body);
+  if (!parsed.success) {
+    return reply.status(400).send({ error: "Validation failed", details: parsed.error.issues });
+  }
+
+  const { name, slug } = parsed.data;
+
+  const [newOrg] = await db
+    .insert(organizations)
+    .values({ name, slug })
+    .returning();
+
+  return reply.status(201).send({ organization: newOrg });
+});
+
+server.get("/organizations/:id", async (request) => {
+  const { id } = request.params as { id: string };
+  const [org] = await db.select().from(organizations).where(eq(organizations.id, id));
+  if (!org) {
+    throw new Error("Organization not found");
+  }
+  return { organization: org };
 });
 
 const port = Number(process.env.API_PORT ?? 3001);
