@@ -190,6 +190,9 @@ importers:
       '@netthouse/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@netthouse/x402':
+        specifier: workspace:*
+        version: link:../../packages/x402
       drizzle-orm:
         specifier: ^0.40.0
         version: 0.40.1(gel@2.2.1)(postgres@3.4.9)
@@ -265,6 +268,25 @@ importers:
       drizzle-kit:
         specifier: ^0.30.0
         version: 0.30.6
+      typescript:
+        specifier: ^5.0.0
+        version: 5.9.3
+
+  packages/x402:
+    dependencies:
+      '@netthouse/db':
+        specifier: workspace:*
+        version: link:../db
+      drizzle-orm:
+        specifier: ^0.40.0
+        version: 0.40.1(gel@2.2.1)(postgres@3.4.9)
+      zod:
+        specifier: ^3.23.0
+        version: 3.25.76
+    devDependencies:
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.43
       typescript:
         specifier: ^5.0.0
         version: 5.9.3

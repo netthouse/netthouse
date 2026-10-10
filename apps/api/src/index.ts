@@ -7,6 +7,7 @@ import { eq } from "drizzle-orm";
 import agentRoutes from "./routes/agents.js";
 import accountRoutes from "./routes/accounts.js";
 import transactionRoutes from "./routes/transactions.js";
+import premiumRoutes from "./routes/premium.js";
 
 const server = Fastify({ logger: true });
 
@@ -58,6 +59,7 @@ server.get("/organizations/:id", async (request) => {
 await server.register(agentRoutes);
 await server.register(accountRoutes);
 await server.register(transactionRoutes);
+await server.register(premiumRoutes);
 
 const port = Number(process.env.API_PORT ?? 3001);
 const host = process.env.API_HOST ?? "0.0.0.0";
