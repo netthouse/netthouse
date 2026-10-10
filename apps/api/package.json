@@ -13,6 +13,7 @@
   "dependencies": {
     "@fastify/cors": "^10.0.0",
     "@fastify/env": "^4.0.0",
+    "@netthouse/clearing": "workspace:*",
     "@netthouse/db": "workspace:*",
     "@netthouse/x402": "workspace:*",
     "drizzle-orm": "^0.40.0",
