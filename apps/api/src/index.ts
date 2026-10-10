@@ -4,12 +4,13 @@ import { z } from "zod";
 import { db } from "@netthouse/db";
 import { organizations } from "@netthouse/db";
 import { eq } from "drizzle-orm";
+import agentRoutes from "./routes/agents.js";
+import accountRoutes from "./routes/accounts.js";
 
 const server = Fastify({ logger: true });
 
 await server.register(cors, { origin: true });
 
-// Schema for creating an organization
 const createOrgSchema = z.object({
   name: z.string().min(1).max(200),
   slug: z.string().min(1).max(100).regex(/^[a-z0-9-]+$/),
@@ -52,6 +53,9 @@ server.get("/organizations/:id", async (request) => {
   }
   return { organization: org };
 });
+
+await server.register(agentRoutes);
+await server.register(accountRoutes);
 
 const port = Number(process.env.API_PORT ?? 3001);
 const host = process.env.API_HOST ?? "0.0.0.0";
