@@ -32,3 +32,26 @@ export const accounts = pgTable(
   },
   (t) => [index("accounts_org_idx").on(t.orgId)]
 );
+export const ledgerTransactions = pgTable(
+  "ledger_transactions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    orgId: uuid("org_id").notNull().references(() => organizations.id, { onDelete: "cascade" }),
+    description: varchar("description", { length: 500 }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("ledger_tx_org_idx").on(t.orgId)]
+);
+
+export const ledgerEntries = pgTable(
+  "ledger_entries",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    transactionId: uuid("transaction_id").notNull().references(() => ledgerTransactions.id, { onDelete: "cascade" }),
+    accountId: uuid("account_id").notNull().references(() => accounts.id, { onDelete: "restrict" }),
+    direction: varchar("direction", { length: 6 }).notNull(),
+    amount: numeric("amount", { precision: 20, scale: 6 }).notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("ledger_entries_tx_idx").on(t.transactionId)]
+);
