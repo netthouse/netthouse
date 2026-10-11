@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, numeric, timestamp, index } from "drizzle-orm/pg-core";
+import { pgTable, uuid, varchar, numeric, timestamp, index, jsonb, boolean } from "drizzle-orm/pg-core";
 
 export const organizations = pgTable("organizations", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -54,4 +54,19 @@ export const ledgerEntries = pgTable(
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [index("ledger_entries_tx_idx").on(t.transactionId)]
+);
+
+export const apiKeys = pgTable(
+  "api_keys",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    orgId: uuid("org_id").notNull().references(() => organizations.id, { onDelete: "cascade" }),
+    name: varchar("name", { length: 200 }).notNull(),
+    key: varchar("key", { length: 512 }).notNull().unique(),
+    scopes: jsonb("scopes").notNull().$type<string[]>().default(["read"]),
+    isActive: boolean("is_active").notNull().default(true),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    lastUsedAt: timestamp("last_used_at", { withTimezone: true }),
+  },
+  (t) => [index("api_keys_org_idx").on(t.orgId)]
 );

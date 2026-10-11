@@ -15,6 +15,13 @@
       "when": 1791632982689,
       "tag": "0001_lame_living_mummy",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791738890648,
+      "tag": "0002_charming_sphinx",
+      "breakpoints": true
     }
   ]
 }

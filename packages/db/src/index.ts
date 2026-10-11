@@ -9,3 +9,4 @@ export const client = postgres(connectionString);
 export const db = drizzle(client, { schema });
 export * from "./schema.js";
 export * from "./ledger.js";
+export * from "./api-keys.js";
