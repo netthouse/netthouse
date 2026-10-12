@@ -1,6 +1,7 @@
 import { FastifyInstance } from "fastify";
 import { z } from "zod";
-import { postTransaction, getAccountBalance } from "@netthouse/db";
+import { eq, inArray } from "drizzle-orm";
+import { postTransaction, getAccountBalance, db, ledgerTransactions, ledgerEntries } from "@netthouse/db";
 
 const transactionEntrySchema = z.object({
   accountId: z.string().uuid(),
@@ -29,6 +30,32 @@ export default async function transactionRoutes(fastify: FastifyInstance) {
       const message = err instanceof Error ? err.message : "Transaction failed";
       return reply.status(400).send({ error: message });
     }
+  });
+
+  // GET /transactions - список транзакций с проводками
+  fastify.get("/transactions", async (request) => {
+    const { orgId } = request.query as { orgId?: string };
+    const txs = orgId
+      ? await db.select().from(ledgerTransactions).where(eq(ledgerTransactions.orgId, orgId))
+      : await db.select().from(ledgerTransactions);
+
+    if (txs.length === 0) return { transactions: [] };
+
+    const entries = await db
+      .select()
+      .from(ledgerEntries)
+      .where(inArray(ledgerEntries.transactionId, txs.map((t) => t.id)));
+
+    const byTx = new Map<string, typeof entries>();
+    for (const e of entries) {
+      const arr = byTx.get(e.transactionId) ?? [];
+      arr.push(e);
+      byTx.set(e.transactionId, arr);
+    }
+
+    return {
+      transactions: txs.map((t) => ({ ...t, entries: byTx.get(t.id) ?? [] })),
+    };
   });
 
   // GET /accounts/:id/balance - получить баланс счёта
