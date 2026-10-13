@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ClerkProvider } from "@clerk/nextjs";
 import Sidebar from "@/components/Sidebar";
 import "./globals.css";
 
@@ -13,13 +14,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="bg-slate-50 text-slate-900 antialiased">
-        <div className="flex">
-          <Sidebar />
-          <main className="flex-1 min-h-screen">{children}</main>
-        </div>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className="bg-slate-50 text-slate-900 antialiased">
+          <div className="flex">
+            <Sidebar />
+            <main className="flex-1 min-h-screen">{children}</main>
+          </div>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
