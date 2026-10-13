@@ -13,7 +13,16 @@ import apiKeyRoutes from "./routes/api-keys.js";
 
 const server = Fastify({ logger: true });
 
-await server.register(cors, { origin: true });
+await server.register(cors, {
+  origin: [
+    "http://localhost:3000",
+    "https://localhost:3000",
+    /^https:\/\/.*\.vercel\.app$/,
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Payment"],
+  credentials: true,
+});
 
 const createOrgSchema = z.object({
   name: z.string().min(1).max(200),
