@@ -1,3 +1,6 @@
+import { cookies } from "next/headers";
+import { getDictionary } from "@/i18n/dictionaries";
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
 type Entry = {
@@ -22,14 +25,17 @@ async function getTransactions(): Promise<Transaction[]> {
 }
 
 export default async function TransactionsPage() {
+  const cookieStore = await cookies();
+  const locale = cookieStore.get("locale")?.value ?? "en";
+  const t = getDictionary(locale);
   const transactions = await getTransactions();
 
   return (
     <div className="p-8">
-      <h1 className="text-2xl font-bold mb-6">Transactions (Ledger)</h1>
+      <h1 className="text-2xl font-bold mb-6">{t.pages.transactions.title}</h1>
       <div className="space-y-4">
         {transactions.length === 0 ? (
-          <p className="text-slate-500">No transactions yet</p>
+          <p className="text-slate-500">{t.pages.transactions.empty}</p>
         ) : (
           transactions.map((tx) => (
             <div key={tx.id} className="bg-white rounded-lg shadow p-6">

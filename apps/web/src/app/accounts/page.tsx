@@ -1,3 +1,6 @@
+import { cookies } from "next/headers";
+import { getDictionary } from "@/i18n/dictionaries";
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
 type Account = {
@@ -16,11 +19,14 @@ async function getAccounts(): Promise<Account[]> {
 }
 
 export default async function AccountsPage() {
+  const cookieStore = await cookies();
+  const locale = cookieStore.get("locale")?.value ?? "en";
+  const t = getDictionary(locale);
   const accounts = await getAccounts();
 
   return (
     <div className="p-8">
-      <h1 className="text-2xl font-bold mb-6">Accounts</h1>
+      <h1 className="text-2xl font-bold mb-6">{t.pages.accounts.title}</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {accounts.map((acc) => (
           <div key={acc.id} className="bg-white rounded-lg shadow p-6">
@@ -32,7 +38,7 @@ export default async function AccountsPage() {
               {Number(acc.balance).toFixed(2)}
             </p>
             <p className="mt-1 text-xs text-slate-500">
-              Created {new Date(acc.createdAt).toLocaleDateString()}
+              {t.pages.accounts.created} {new Date(acc.createdAt).toLocaleDateString()}
             </p>
           </div>
         ))}

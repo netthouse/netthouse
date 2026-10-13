@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { ClerkProvider } from "@clerk/nextjs";
 import Sidebar from "@/components/Sidebar";
 import "./globals.css";
@@ -8,17 +9,20 @@ export const metadata: Metadata = {
   description: "AI Agent Payments Platform",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const cookieStore = await cookies();
+  const locale = cookieStore.get("locale")?.value ?? "en";
+
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang={locale}>
         <body className="bg-slate-50 text-slate-900 antialiased">
           <div className="flex">
-            <Sidebar />
+            <Sidebar locale={locale} />
             <main className="flex-1 min-h-screen">{children}</main>
           </div>
         </body>
