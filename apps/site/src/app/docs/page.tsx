@@ -15,8 +15,9 @@ export default function DocsPage() {
     <div className="min-h-screen">
       <header className="border-b border-slate-200 sticky top-0 bg-white/90 backdrop-blur z-10">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-           <Link href="/">
-            <img src="/netthouse-horizontal-color.svg" alt="Netthouse" className="h-8 w-auto" />
+           <Link href="/" className="flex items-center gap-2">
+            <img src="/netthouse-icon-color.svg" alt="" className="h-8 w-8" />
+            <span className="text-xl font-bold tracking-tight">Netthouse</span>
           </Link>
           <nav className="flex gap-6 text-sm">
             <Link href="/#features" className="text-slate-600 hover:text-slate-900">
