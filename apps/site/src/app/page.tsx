@@ -4,12 +4,9 @@ export default function HomePage() {
       {/* Header */}
       <header className="border-b border-slate-200 bg-white/80 backdrop-blur sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-md bg-slate-900 flex items-center justify-center">
-              <span className="text-white font-bold text-lg">N</span>
-            </div>
-            <div className="text-xl font-bold">Netthouse</div>
-          </div>
+             <a href="/" className="flex items-center">
+            <img src="/netthouse-horizontal-color.svg" alt="Netthouse" className="h-8 w-auto" />
+          </a>
           <nav className="hidden md:flex gap-8 text-sm">
             <a href="#how" className="text-slate-600 hover:text-slate-900">How it works</a>
             <a href="#features" className="text-slate-600 hover:text-slate-900">Features</a>
@@ -197,12 +194,7 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <div className="flex items-center gap-2 mb-3">
-                <div className="w-7 h-7 rounded-md bg-slate-900 flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">N</span>
-                </div>
-                <span className="font-bold">Netthouse</span>
-              </div>
+             <img src="/netthouse-horizontal-color.svg" alt="Netthouse" className="h-7 w-auto mb-3" />
               <p className="text-sm text-slate-500">
                 Payments infrastructure for AI agents.
               </p>

@@ -8,6 +8,12 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.svg",
   },
+openGraph: {
+    title: "Netthouse — AI Agent Payments Platform",
+    description:
+      "Double-entry ledger, x402 payments, and automatic clearing for AI agents.",
+    images: ["/netthouse-og.svg"],
+  },
 };
 
 export default function RootLayout({
