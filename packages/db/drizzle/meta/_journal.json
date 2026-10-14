@@ -22,6 +22,13 @@
       "when": 1791738890648,
       "tag": "0002_charming_sphinx",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1791976960746,
+      "tag": "0003_nasty_toxin",
+      "breakpoints": true
     }
   ]
 }

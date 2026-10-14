@@ -1,0 +1,1 @@
+ALTER TABLE "organizations" ADD COLUMN "clerk_user_id" varchar(255);
