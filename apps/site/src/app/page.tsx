@@ -146,7 +146,7 @@ export default function HomePage() {
             <p className="text-center text-slate-600 max-w-2xl mx-auto mb-16">
               Free while you build. Pay when you scale.
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
               <Price
                 name="Hobby"
                 price="Free"
@@ -159,13 +159,20 @@ export default function HomePage() {
                 price="$29"
                 desc="Per month, per organization"
                 features={["Unlimited orgs", "1M transactions/month", "Priority support", "Custom domains"]}
+                highlight={false}
+              />
+              <Price
+                name="Startup"
+                price="$99"
+                desc="For teams shipping agent products"
+                features={["Everything in Pro", "10M transactions/month", "Audit logs", "Slack support"]}
                 highlight={true}
               />
               <Price
                 name="Enterprise"
                 price="Custom"
                 desc="For regulated workloads"
-                features={["SLA", "On-prem option", "SSO / SAML", "Dedicated CSM"]}
+                features={["SLA & on-prem", "SSO / SAML", "Dedicated CSM", "Custom clearing rules"]}
                 highlight={false}
               />
             </div>
