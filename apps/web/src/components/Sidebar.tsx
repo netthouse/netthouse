@@ -22,11 +22,8 @@ export default function Sidebar({ locale }: { locale: string }) {
 
   return (
     <aside className="w-64 bg-slate-900 text-white min-h-screen p-4 flex flex-col">
-            <div className="mb-6">
-        <div className="flex items-center gap-2">
-          <img src="/netthouse-icon-white.svg" alt="" className="h-8 w-8" />
-          <span className="text-xl font-bold text-white">Netthouse</span>
-        </div>
+               <div className="mb-6">
+        <img src="/netthouse-horizontal-white.svg" alt="Netthouse" className="h-8 w-auto" />
         <p className="text-xs text-slate-400 mt-1">AI Payments Platform</p>
       </div>
 
