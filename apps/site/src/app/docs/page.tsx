@@ -26,7 +26,7 @@ export default function DocsPage() {
               Docs
             </Link>
             <a
-              href="https://netthouse-web.onrender.com"
+              href="https://app.netthouse.com"
               className="text-slate-600 hover:text-slate-900"
             >
               Sign in

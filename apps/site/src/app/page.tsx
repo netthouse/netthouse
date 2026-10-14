@@ -7,7 +7,7 @@ export default function HomePage() {
           <nav className="flex gap-6 text-sm">
             <a href="#features" className="text-slate-600 hover:text-slate-900">Features</a>
             <a href="/docs" className="text-slate-600 hover:text-slate-900">Docs</a>
-            <a href="https://netthouse-web.onrender.com" className="text-slate-600 hover:text-slate-900">Sign in</a>
+            <a href="https://app.netthouse.com" className="text-slate-600 hover:text-slate-900">Sign in</a>
           </nav>
         </div>
       </header>
@@ -23,7 +23,7 @@ export default function HomePage() {
           </p>
           <div className="mt-10 flex gap-4 justify-center">
             <a
-              href="https://netthouse-web.onrender.com"
+              href="https://app.netthouse.com"
               className="px-6 py-3 bg-slate-900 text-white rounded-lg font-medium hover:bg-slate-800"
             >
               Open dashboard
