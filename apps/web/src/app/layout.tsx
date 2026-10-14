@@ -7,6 +7,9 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Netthouse - Dashboard",
   description: "AI Agent Payments Platform",
+icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default async function RootLayout({
