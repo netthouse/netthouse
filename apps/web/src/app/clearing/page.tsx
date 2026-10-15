@@ -1,5 +1,7 @@
 import { cookies } from "next/headers";
+import { auth } from "@clerk/nextjs/server";
 import { getDictionary } from "@/i18n/dictionaries";
+import { apiFetch } from "@/lib/api";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
@@ -16,23 +18,34 @@ type ClearingData = {
   totalSaved: string;
 };
 
-async function getClearing(): Promise<ClearingData | null> {
-  const orgsRes = await fetch(`${API_URL}/organizations`, { cache: "no-store" });
-  if (!orgsRes.ok) return null;
-  const orgs = await orgsRes.json();
-  const orgId: string | undefined = orgs.organizations[0]?.id;
-  if (!orgId) return null;
-
-  const res = await fetch(`${API_URL}/clearing?orgId=${orgId}`, { cache: "no-store" });
-  if (!res.ok) return null;
-  return await res.json();
-}
-
 export default async function ClearingPage() {
+  const { userId } = await auth();
   const cookieStore = await cookies();
   const locale = cookieStore.get("locale")?.value ?? "en";
   const t = getDictionary(locale);
-  const data = await getClearing();
+
+  if (!userId) {
+    return (
+      <div className="p-8">
+        <h1 className="text-2xl font-bold mb-6">{t.pages.clearing.title}</h1>
+        <p className="text-slate-500">Not signed in</p>
+      </div>
+    );
+  }
+
+  const orgsData = await apiFetch<{
+    organizations: { id: string; name: string }[];
+  }>(userId, "/organizations");
+  const orgId = orgsData.organizations[0]?.id;
+
+  let data: ClearingData | null = null;
+  if (orgId) {
+    const res = await fetch(`${API_URL}/clearing?orgId=${orgId}`, {
+      cache: "no-store",
+      headers: { "X-User-Id": userId },
+    });
+    if (res.ok) data = await res.json();
+  }
 
   if (!data) {
     return (

@@ -1,8 +1,10 @@
 import { cookies } from "next/headers";
+import { auth } from "@clerk/nextjs/server";
 import { getDictionary } from "@/i18n/dictionaries";
+import { apiFetch } from "@/lib/api";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 const ADMIN_KEY = process.env.API_ADMIN_KEY ?? "";
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
 type ApiKeyRow = {
   id: string;
@@ -14,27 +16,35 @@ type ApiKeyRow = {
   keyPreview: string;
 };
 
-async function getKeys(): Promise<ApiKeyRow[]> {
-  const orgsRes = await fetch(`${API_URL}/organizations`, { cache: "no-store" });
-  if (!orgsRes.ok) return [];
-  const orgs = await orgsRes.json();
-  const orgId: string | undefined = orgs.organizations[0]?.id;
-  if (!orgId) return [];
-
-  const res = await fetch(`${API_URL}/api-keys?orgId=${orgId}`, {
-    cache: "no-store",
-    headers: { Authorization: `Bearer ${ADMIN_KEY}` },
-  });
-  if (!res.ok) return [];
-  const data = await res.json();
-  return data.apiKeys;
-}
-
 export default async function ApiKeysPage() {
+  const { userId } = await auth();
   const cookieStore = await cookies();
   const locale = cookieStore.get("locale")?.value ?? "en";
   const t = getDictionary(locale);
-  const keys = await getKeys();
+
+  if (!userId) {
+    return <div className="p-8 text-slate-500">Not signed in</div>;
+  }
+
+  const orgsData = await apiFetch<{
+    organizations: { id: string; name: string }[];
+  }>(userId, "/organizations");
+  const orgId = orgsData.organizations[0]?.id;
+  let keys: ApiKeyRow[] = [];
+
+  if (orgId) {
+    const res = await fetch(`${API_URL}/api-keys?orgId=${orgId}`, {
+      cache: "no-store",
+      headers: {
+        Authorization: `Bearer ${ADMIN_KEY}`,
+        "X-User-Id": userId,
+      },
+    });
+    if (res.ok) {
+      const data = await res.json();
+      keys = data.apiKeys;
+    }
+  }
 
   return (
     <div className="p-8">

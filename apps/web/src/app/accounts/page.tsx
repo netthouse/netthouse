@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
+import { auth } from "@clerk/nextjs/server";
 import { getDictionary } from "@/i18n/dictionaries";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+import { apiFetch } from "@/lib/api";
 
 type Account = {
   id: string;
@@ -11,18 +11,18 @@ type Account = {
   createdAt: string;
 };
 
-async function getAccounts(): Promise<Account[]> {
-  const res = await fetch(`${API_URL}/accounts`, { cache: "no-store" });
-  if (!res.ok) throw new Error("Failed to fetch accounts");
-  const data = await res.json();
-  return data.accounts;
-}
-
 export default async function AccountsPage() {
+  const { userId } = await auth();
   const cookieStore = await cookies();
   const locale = cookieStore.get("locale")?.value ?? "en";
   const t = getDictionary(locale);
-  const accounts = await getAccounts();
+
+  if (!userId) {
+    return <div className="p-8 text-slate-500">Not signed in</div>;
+  }
+
+  const data = await apiFetch<{ accounts: Account[] }>(userId, "/accounts");
+  const accounts = data.accounts;
 
   return (
     <div className="p-8">

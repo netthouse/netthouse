@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
+import { auth } from "@clerk/nextjs/server";
 import { getDictionary } from "@/i18n/dictionaries";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
+import { apiFetch } from "@/lib/api";
 
 type Entry = {
   id: string;
@@ -17,18 +17,18 @@ type Transaction = {
   entries: Entry[];
 };
 
-async function getTransactions(): Promise<Transaction[]> {
-  const res = await fetch(`${API_URL}/transactions`, { cache: "no-store" });
-  if (!res.ok) throw new Error("Failed to fetch transactions");
-  const data = await res.json();
-  return data.transactions;
-}
-
 export default async function TransactionsPage() {
+  const { userId } = await auth();
   const cookieStore = await cookies();
   const locale = cookieStore.get("locale")?.value ?? "en";
   const t = getDictionary(locale);
-  const transactions = await getTransactions();
+
+  if (!userId) {
+    return <div className="p-8 text-slate-500">Not signed in</div>;
+  }
+
+  const data = await apiFetch<{ transactions: Transaction[] }>(userId, "/transactions");
+  const transactions = data.transactions;
 
   return (
     <div className="p-8">
