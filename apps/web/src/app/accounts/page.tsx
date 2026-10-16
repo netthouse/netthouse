@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { auth } from "@clerk/nextjs/server";
 import { getDictionary } from "@/i18n/dictionaries";
 import { apiFetch } from "@/lib/api";
+import { getCurrentOrg } from "@/lib/org";
 
 type Account = {
   id: string;
@@ -21,7 +22,14 @@ export default async function AccountsPage() {
     return <div className="p-8 text-slate-500">Not signed in</div>;
   }
 
-  const data = await apiFetch<{ accounts: Account[] }>(userId, "/accounts");
+    const currentOrg = await getCurrentOrg();
+  if (!currentOrg) {
+    return <div className="p-8 text-slate-500">No organizations yet</div>;
+  }
+  const data = await apiFetch<{ accounts: Account[] }>(
+    userId,
+    `/accounts?orgId=${currentOrg.id}`
+  );
   const accounts = data.accounts;
 
   return (

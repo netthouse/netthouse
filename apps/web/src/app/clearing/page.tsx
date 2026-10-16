@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { auth } from "@clerk/nextjs/server";
 import { getDictionary } from "@/i18n/dictionaries";
 import { apiFetch } from "@/lib/api";
+import { getCurrentOrg } from "@/lib/org";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
@@ -33,10 +34,8 @@ export default async function ClearingPage() {
     );
   }
 
-  const orgsData = await apiFetch<{
-    organizations: { id: string; name: string }[];
-  }>(userId, "/organizations");
-  const orgId = orgsData.organizations[0]?.id;
+    const currentOrg = await getCurrentOrg();
+  const orgId = currentOrg?.id;
 
   let data: ClearingData | null = null;
   if (orgId) {

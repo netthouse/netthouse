@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { auth } from "@clerk/nextjs/server";
 import { getDictionary } from "@/i18n/dictionaries";
 import { apiFetch } from "@/lib/api";
+import { getCurrentOrg } from "@/lib/org";
 
 const ADMIN_KEY = process.env.API_ADMIN_KEY ?? "";
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
@@ -26,10 +27,8 @@ export default async function ApiKeysPage() {
     return <div className="p-8 text-slate-500">Not signed in</div>;
   }
 
-  const orgsData = await apiFetch<{
-    organizations: { id: string; name: string }[];
-  }>(userId, "/organizations");
-  const orgId = orgsData.organizations[0]?.id;
+    const currentOrg = await getCurrentOrg();
+  const orgId = currentOrg?.id;
   let keys: ApiKeyRow[] = [];
 
   if (orgId) {
