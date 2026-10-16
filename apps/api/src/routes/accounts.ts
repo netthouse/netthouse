@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
 import { z } from "zod";
-import { db } from "@netthouse/db";
+import { db, getAccountBalance } from "@netthouse/db";
 import { accounts, organizations } from "@netthouse/db";
 import { eq, and } from "drizzle-orm";
 import { requireUser, requireOwnOrg } from "../lib/auth.js";
@@ -14,15 +14,23 @@ const createAccountSchema = z.object({
 
 export default async function accountRoutes(fastify: FastifyInstance) {
   
-   // GET /accounts — список счетов пользователя (опционально по одной org)
+     // GET /accounts — список счетов пользователя (опционально по одной org)
   fastify.get("/accounts", async (request) => {
     const userId = requireUser(request);
     const { orgId } = request.query as { orgId?: string };
 
+    const attachBalance = async (rows: any[]) =>
+      Promise.all(
+        rows.map(async (acc) => ({
+          ...acc,
+          balance: await getAccountBalance(acc.id),
+        }))
+      );
+
     if (orgId) {
       await requireOwnOrg(request, orgId);
       const rows = await db.select().from(accounts).where(eq(accounts.orgId, orgId));
-      return { accounts: rows };
+      return { accounts: await attachBalance(rows) };
     }
 
     const rows = await db
@@ -31,13 +39,12 @@ export default async function accountRoutes(fastify: FastifyInstance) {
         orgId: accounts.orgId,
         agentId: accounts.agentId,
         currency: accounts.currency,
-        balance: accounts.balance,
         createdAt: accounts.createdAt,
       })
       .from(accounts)
       .innerJoin(organizations, eq(accounts.orgId, organizations.id))
       .where(eq(organizations.clerkUserId, userId));
-    return { accounts: rows };
+    return { accounts: await attachBalance(rows) };
   });
 
   // POST /accounts — создать счёт в СВОЕЙ организации

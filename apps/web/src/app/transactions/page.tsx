@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { getDictionary } from "@/i18n/dictionaries";
 import { apiFetch } from "@/lib/api";
 import { getCurrentOrg } from "@/lib/org";
+import TransactionForm from "@/components/TransactionForm";
 
 type Entry = {
   id: string;
@@ -28,10 +29,11 @@ export default async function TransactionsPage() {
     return <div className="p-8 text-slate-500">Not signed in</div>;
   }
 
-    const currentOrg = await getCurrentOrg();
+  const currentOrg = await getCurrentOrg();
   if (!currentOrg) {
     return <div className="p-8 text-slate-500">No organizations yet</div>;
   }
+
   const data = await apiFetch<{ transactions: Transaction[] }>(
     userId,
     `/transactions?orgId=${currentOrg.id}`
@@ -41,6 +43,9 @@ export default async function TransactionsPage() {
   return (
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-6">{t.pages.transactions.title}</h1>
+
+      <TransactionForm userId={userId} orgId={currentOrg.id} />
+
       <div className="space-y-4">
         {transactions.length === 0 ? (
           <p className="text-slate-500">{t.pages.transactions.empty}</p>
