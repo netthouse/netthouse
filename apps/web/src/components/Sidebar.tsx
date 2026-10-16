@@ -5,8 +5,19 @@ import { usePathname } from "next/navigation";
 import { SignOutButton, useUser } from "@clerk/nextjs";
 import { getDictionary } from "@/i18n/dictionaries";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import OrgSwitcher from "@/components/OrgSwitcher";
 
-export default function Sidebar({ locale }: { locale: string }) {
+type Org = { id: string; name: string; slug: string };
+
+export default function Sidebar({
+  locale,
+  orgs,
+  currentOrgId,
+}: {
+  locale: string;
+  orgs: Org[];
+  currentOrgId: string | null;
+}) {
   const pathname = usePathname();
   const { user } = useUser();
   const t = getDictionary(locale);
@@ -22,10 +33,12 @@ export default function Sidebar({ locale }: { locale: string }) {
 
   return (
     <aside className="w-64 bg-slate-900 text-white min-h-screen p-4 flex flex-col">
-               <div className="mb-6">
+      <div className="mb-6">
         <img src="/netthouse-horizontal-white.svg" alt="Netthouse" className="h-8 w-auto" />
         <p className="text-xs text-slate-400 mt-1">AI Payments Platform</p>
       </div>
+
+      <OrgSwitcher orgs={orgs} currentOrgId={currentOrgId} locale={locale} />
 
       <div className="mb-6">
         <LanguageSwitcher locale={locale} />
