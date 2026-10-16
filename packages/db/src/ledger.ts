@@ -79,13 +79,22 @@ export async function postTransaction(input: PostTransactionInput) {
  * balance = credit - debit (счёт пассивный)
  */
 export async function getAccountBalance(accountId: string): Promise<string> {
+  // начальный баланс счёта (opening balance)
+  const [acc] = await db
+    .select({ balance: accounts.balance })
+    .from(accounts)
+    .where(eq(accounts.id, accountId));
+  const initial = Number(acc?.balance ?? 0);
+
+  // движение из ledger: credit − debit
   const [result] = await db
     .select({
-      balance: sql<string>`COALESCE(SUM(CASE WHEN ${ledgerEntries.direction} = 'credit' THEN ${ledgerEntries.amount}::numeric ELSE 0 END), 0) -
+      delta: sql<string>`COALESCE(SUM(CASE WHEN ${ledgerEntries.direction} = 'credit' THEN ${ledgerEntries.amount}::numeric ELSE 0 END), 0) -
                 COALESCE(SUM(CASE WHEN ${ledgerEntries.direction} = 'debit' THEN ${ledgerEntries.amount}::numeric ELSE 0 END), 0)`,
     })
     .from(ledgerEntries)
     .where(eq(ledgerEntries.accountId, accountId));
+  const delta = Number(result?.delta ?? 0);
 
-  return result?.balance ?? "0";
+  return (initial + delta).toFixed(2);
 }
