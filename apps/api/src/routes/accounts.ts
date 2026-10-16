@@ -1,8 +1,9 @@
 import { FastifyInstance } from "fastify";
 import { z } from "zod";
 import { db } from "@netthouse/db";
-import { accounts } from "@netthouse/db";
-import { eq } from "drizzle-orm";
+import { accounts, organizations } from "@netthouse/db";
+import { eq, and } from "drizzle-orm";
+import { requireUser, requireOwnOrg } from "../lib/auth.js";
 
 const createAccountSchema = z.object({
   orgId: z.string().uuid(),
@@ -12,20 +13,43 @@ const createAccountSchema = z.object({
 });
 
 export default async function accountRoutes(fastify: FastifyInstance) {
-  // GET /accounts - список всех счетов
-  fastify.get("/accounts", async () => {
-    const allAccounts = await db.select().from(accounts);
-    return { accounts: allAccounts };
+  
+   // GET /accounts — список счетов пользователя (опционально по одной org)
+  fastify.get("/accounts", async (request) => {
+    const userId = requireUser(request);
+    const { orgId } = request.query as { orgId?: string };
+
+    if (orgId) {
+      await requireOwnOrg(request, orgId);
+      const rows = await db.select().from(accounts).where(eq(accounts.orgId, orgId));
+      return { accounts: rows };
+    }
+
+    const rows = await db
+      .select({
+        id: accounts.id,
+        orgId: accounts.orgId,
+        agentId: accounts.agentId,
+        currency: accounts.currency,
+        balance: accounts.balance,
+        createdAt: accounts.createdAt,
+      })
+      .from(accounts)
+      .innerJoin(organizations, eq(accounts.orgId, organizations.id))
+      .where(eq(organizations.clerkUserId, userId));
+    return { accounts: rows };
   });
 
-  // POST /accounts - создать счёт
+  // POST /accounts — создать счёт в СВОЕЙ организации
   fastify.post("/accounts", async (request, reply) => {
     const parsed = createAccountSchema.safeParse(request.body);
     if (!parsed.success) {
       return reply.status(400).send({ error: "Validation failed", details: parsed.error.issues });
     }
-
     const { orgId, agentId, currency, balance } = parsed.data;
+
+    // проверка: org принадлежит пользователю
+    await requireOwnOrg(request, orgId);
 
     const [newAccount] = await db
       .insert(accounts)
@@ -35,13 +59,17 @@ export default async function accountRoutes(fastify: FastifyInstance) {
     return reply.status(201).send({ account: newAccount });
   });
 
-  // GET /accounts/:id - получить один счёт
+  // GET /accounts/:id — получить один счёт (только свой)
   fastify.get("/accounts/:id", async (request) => {
     const { id } = request.params as { id: string };
     const [account] = await db.select().from(accounts).where(eq(accounts.id, id));
     if (!account) {
-      throw new Error("Account not found");
+      const err = new Error("Account not found") as Error & { statusCode?: number };
+      err.statusCode = 404;
+      throw err;
     }
+    // проверка: org этого счёта принадлежит пользователю
+    await requireOwnOrg(request, account.orgId);
     return { account };
   });
 }
