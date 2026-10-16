@@ -1,5 +1,5 @@
 import { eq, inArray } from "drizzle-orm";
-import { db, ledgerEntries, ledgerTransactions, accounts } from "@netthouse/db";
+import { db, ledgerEntries, ledgerTransactions, accounts, postTransaction } from "@netthouse/db";
 
 type Entry = typeof ledgerEntries.$inferSelect;
 
@@ -106,4 +106,33 @@ export async function proposeClearing(orgId: string): Promise<ClearingProposal> 
     netFlow: net.toFixed(2),
     totalSaved: saved.toFixed(2),
   };
+}
+/**
+ * Применяет предложения неттинга: создаёт реальные транзакции
+ * "from → to" на сумму netAmount для каждого proposal.
+ */
+export async function applyClearing(orgId: string): Promise<{
+  created: number;
+  transactions: { id: string; description: string }[];
+}> {
+  const proposal = await proposeClearing(orgId);
+  if (proposal.proposals.length === 0) {
+    return { created: 0, transactions: [] };
+  }
+
+  const created: { id: string; description: string }[] = [];
+  for (const p of proposal.proposals) {
+    const description = `Clearing: ${p.fromAccountId.slice(0, 8)}… → ${p.toAccountId.slice(0, 8)}…`;
+    const result = await postTransaction({
+      orgId,
+      description,
+      entries: [
+        { accountId: p.fromAccountId, direction: "debit", amount: p.netAmount },
+        { accountId: p.toAccountId, direction: "credit", amount: p.netAmount },
+      ],
+    });
+    created.push({ id: result.transaction.id, description });
+  }
+
+  return { created: created.length, transactions: created };
 }

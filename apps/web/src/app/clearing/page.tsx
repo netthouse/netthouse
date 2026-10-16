@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { getDictionary } from "@/i18n/dictionaries";
 import { apiFetch } from "@/lib/api";
 import { getCurrentOrg } from "@/lib/org";
+import ClearingApplyButton from "@/components/ClearingApplyButton";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
@@ -34,7 +35,7 @@ export default async function ClearingPage() {
     );
   }
 
-    const currentOrg = await getCurrentOrg();
+  const currentOrg = await getCurrentOrg();
   const orgId = currentOrg?.id;
 
   let data: ClearingData | null = null;
@@ -57,7 +58,14 @@ export default async function ClearingPage() {
 
   return (
     <div className="p-8">
-      <h1 className="text-2xl font-bold mb-6">{t.pages.clearing.title}</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold">{t.pages.clearing.title}</h1>
+        <ClearingApplyButton
+          userId={userId}
+          orgId={orgId!}
+          hasProposals={data.proposals.length > 0}
+        />
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         <div className="bg-white rounded-lg shadow p-6">
