@@ -29,6 +29,13 @@
       "when": 1791976960746,
       "tag": "0003_nasty_toxin",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792234457422,
+      "tag": "0004_hot_silver_fox",
+      "breakpoints": true
     }
   ]
 }

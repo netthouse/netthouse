@@ -71,3 +71,19 @@ export const apiKeys = pgTable(
   },
   (t) => [index("api_keys_org_idx").on(t.orgId)]
 );
+export const x402Payments = pgTable(
+  "x402_payments",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    orgId: uuid("org_id").references(() => organizations.id, { onDelete: "set null" }),
+    txHash: varchar("tx_hash", { length: 66 }).notNull().unique(),
+    fromAddress: varchar("from_address", { length: 42 }).notNull(),
+    toAddress: varchar("to_address", { length: 42 }).notNull(),
+    amount: numeric("amount", { precision: 20, scale: 6 }).notNull(),
+    network: varchar("network", { length: 50 }).notNull().default("base-sepolia"),
+    resource: varchar("resource", { length: 500 }).notNull(),
+    description: varchar("description", { length: 500 }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("x402_payments_org_idx").on(t.orgId)]
+);
