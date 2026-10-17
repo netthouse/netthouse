@@ -16,9 +16,12 @@
     "@netthouse/clearing": "workspace:*",
     "@netthouse/db": "workspace:*",
     "@netthouse/x402": "workspace:*",
+    "dotenv": "^18.0.8",
     "drizzle-orm": "^0.40.0",
     "fastify": "^5.0.0",
     "postgres": "^3.4.0",
+    "viem": "^2.57.7",
+    "x402": "^1.2.0",
     "zod": "^3.23.0"
   },
   "devDependencies": {
