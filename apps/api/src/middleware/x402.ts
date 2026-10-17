@@ -57,6 +57,10 @@ export async function x402Middleware(
 
   try {
     const payload = exact.evm.decodePayment(paymentHeader);
+    // Сужаем union-тип payload до EVM-варианта (Base Sepolia)
+    const evmPayload = payload.payload as {
+      authorization: { from: string; to: string; value: string };
+    };
 
     // Верификация подписи через facilitator
     const verification = await facilitator.verify(payload, requirements);
@@ -87,7 +91,7 @@ export async function x402Middleware(
       await db.insert(x402Payments).values({
         orgId: config.orgId ?? null,
         txHash,
-        fromAddress: payload.payload.authorization.from,
+        fromAddress: evmPayload.authorization.from,
         toAddress: requirements.payTo,
         amount: config.amount,
         network: "base-sepolia",
@@ -102,7 +106,7 @@ export async function x402Middleware(
       payload,
       txHash,
       amount: config.amount,
-      fromAddress: payload.payload.authorization.from,
+      fromAddress: evmPayload.authorization.from,
     };
 
     return true;
