@@ -64,6 +64,7 @@ export default async function ClearingPage() {
           userId={userId}
           orgId={orgId!}
           hasProposals={data.proposals.length > 0}
+          locale={locale as any}
         />
       </div>
 

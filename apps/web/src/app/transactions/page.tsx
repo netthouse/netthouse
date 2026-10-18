@@ -44,7 +44,7 @@ export default async function TransactionsPage() {
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-6">{t.pages.transactions.title}</h1>
 
-      <TransactionForm userId={userId} orgId={currentOrg.id} />
+      <TransactionForm userId={userId} orgId={currentOrg.id} locale={locale as any} />
 
       <div className="space-y-4">
         {transactions.length === 0 ? (
@@ -55,7 +55,7 @@ export default async function TransactionsPage() {
               <div className="flex items-center justify-between">
                 <h2 className="text-sm font-semibold text-slate-900">{tx.description}</h2>
                 <span className="text-xs text-slate-500">
-                  {new Date(tx.createdAt).toLocaleString()}
+                  {new Date(tx.createdAt).toLocaleString(locale)}
                 </span>
               </div>
               <div className="mt-4 space-y-2">
@@ -64,13 +64,16 @@ export default async function TransactionsPage() {
                     <span className="font-mono text-xs text-slate-500">
                       {e.accountId.slice(0, 8)}...
                     </span>
-                    <span
+                     <span
                       className={`font-medium ${
                         e.direction === "debit" ? "text-red-600" : "text-green-600"
                       }`}
                     >
                       {e.direction === "debit" ? "-" : "+"}
-                      {Number(e.amount).toFixed(2)} {e.direction}
+                      {Number(e.amount).toFixed(2)}{" "}
+                      {e.direction === "debit"
+                        ? t.pages.transactions.debit
+                        : t.pages.transactions.credit}
                     </span>
                   </div>
                 ))}

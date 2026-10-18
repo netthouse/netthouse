@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { createApiKeyAction, revokeApiKeyAction } from "@/app/actions";
+import { getDictionary, type Locale } from "@/i18n/dictionaries";
 
 type ApiKeyRow = {
   id: string;
@@ -19,11 +20,14 @@ export default function ApiKeyManager({
   userId,
   orgId,
   keys,
+  locale,
 }: {
   userId: string;
   orgId: string;
   keys: ApiKeyRow[];
+  locale: Locale;
 }) {
+  const t = getDictionary(locale);
   const [isPending, startTransition] = useTransition();
   const [showForm, setShowForm] = useState(false);
   const [name, setName] = useState("");
@@ -42,11 +46,11 @@ export default function ApiKeyManager({
   const handleCreate = () => {
     setError(null);
     if (!name.trim()) {
-      setError("Name is required");
+      setError(t.pages.apiKeys.nameRequired);
       return;
     }
     if (selectedScopes.length === 0) {
-      setError("Select at least one scope");
+      setError(t.pages.apiKeys.selectScope);
       return;
     }
     startTransition(() => {
@@ -86,17 +90,16 @@ export default function ApiKeyManager({
 
   return (
     <div className="space-y-6">
-      {/* Banner: новый ключ показан один раз */}
       {newKey && (
         <div className="bg-green-50 border border-green-300 rounded-lg p-6">
           <div className="flex items-start gap-3">
             <div className="text-2xl">🔑</div>
             <div className="flex-1">
               <h3 className="font-semibold text-green-900 mb-2">
-                API key created successfully!
+                {t.pages.apiKeys.createSuccess}
               </h3>
               <p className="text-sm text-green-800 mb-3">
-                <strong>Save this key now</strong> — you won't see it again.
+                <strong>{t.pages.apiKeys.saveNow}</strong>
               </p>
               <div className="flex gap-2">
                 <input
@@ -109,13 +112,13 @@ export default function ApiKeyManager({
                   onClick={copyKey}
                   className="px-4 py-2 bg-green-600 text-white rounded-md text-sm hover:bg-green-700"
                 >
-                  {copied ? "Copied!" : "Copy"}
+                  {copied ? t.common.copied : t.common.copy}
                 </button>
                 <button
                   onClick={() => setNewKey(null)}
                   className="px-4 py-2 border border-green-400 text-green-800 rounded-md text-sm hover:bg-green-100"
                 >
-                  Dismiss
+                  {t.common.dismiss}
                 </button>
               </div>
             </div>
@@ -123,42 +126,39 @@ export default function ApiKeyManager({
         </div>
       )}
 
-      {/* Confirmation modal */}
       {confirmRevoke && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-xl p-6 max-w-md">
-            <h3 className="text-lg font-semibold mb-2">Revoke API key?</h3>
+            <h3 className="text-lg font-semibold mb-2">{t.pages.apiKeys.revokeTitle}</h3>
             <p className="text-sm text-slate-600 mb-4">
-              This action cannot be undone. Any clients using this key will
-              immediately lose access.
+              {t.pages.apiKeys.revokeConfirm}
             </p>
             <div className="flex gap-2 justify-end">
               <button
                 onClick={() => setConfirmRevoke(null)}
                 className="px-4 py-2 border border-slate-300 rounded-md text-sm hover:bg-slate-100"
               >
-                Cancel
+                {t.common.cancel}
               </button>
               <button
                 onClick={confirmRevokeAction}
                 disabled={isPending}
                 className="px-4 py-2 bg-red-600 text-white rounded-md text-sm hover:bg-red-700 disabled:opacity-50"
               >
-                {isPending ? "Revoking..." : "Revoke"}
+                {isPending ? t.common.revoking : t.pages.apiKeys.revoke}
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Create button / form */}
       <div>
         {!showForm && !newKey && (
           <button
             onClick={() => setShowForm(true)}
             className="px-4 py-2 bg-slate-900 text-white rounded-md hover:bg-slate-800 text-sm"
           >
-            + Create new API key
+            {t.pages.apiKeys.createKey}
           </button>
         )}
 
@@ -166,19 +166,19 @@ export default function ApiKeyManager({
           <div className="p-4 border border-slate-200 rounded-lg bg-white space-y-4">
             <div>
               <label className="block text-xs font-medium text-slate-500 mb-1">
-                Name
+                {t.pages.apiKeys.name}
               </label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm"
-                placeholder="e.g., Production bot"
+                placeholder={t.pages.apiKeys.namePlaceholder}
               />
             </div>
             <div>
               <label className="block text-xs font-medium text-slate-500 mb-2">
-                Scopes
+                {t.pages.apiKeys.scopes}
               </label>
               <div className="flex flex-wrap gap-3">
                 {AVAILABLE_SCOPES.map((s) => (
@@ -200,7 +200,7 @@ export default function ApiKeyManager({
                 disabled={isPending}
                 className="px-4 py-2 bg-slate-900 text-white rounded-md hover:bg-slate-800 text-sm disabled:opacity-50"
               >
-                {isPending ? "Creating..." : "Create"}
+                {isPending ? t.common.creating : t.common.create}
               </button>
               <button
                 onClick={() => {
@@ -209,32 +209,31 @@ export default function ApiKeyManager({
                 }}
                 className="px-4 py-2 border border-slate-300 rounded-md text-sm hover:bg-slate-100"
               >
-                Cancel
+                {t.common.cancel}
               </button>
             </div>
           </div>
         )}
       </div>
 
-      {/* Keys table with revoke buttons */}
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <table className="min-w-full divide-y divide-slate-200">
           <thead className="bg-slate-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">
-                Name
+                {t.pages.apiKeys.name}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">
-                Key
+                {t.pages.apiKeys.key}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">
-                Scopes
+                {t.pages.apiKeys.scopes}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">
-                Status
+                {t.pages.apiKeys.status}
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase">
-                Last used
+                {t.pages.apiKeys.lastUsed}
               </th>
               <th className="px-6 py-3"></th>
             </tr>
@@ -243,7 +242,7 @@ export default function ApiKeyManager({
             {keys.length === 0 ? (
               <tr>
                 <td colSpan={6} className="px-6 py-8 text-center text-slate-500">
-                  No API keys yet
+                  {t.pages.apiKeys.noKeys}
                 </td>
               </tr>
             ) : (
@@ -275,13 +274,13 @@ export default function ApiKeyManager({
                           : "bg-red-100 text-red-700"
                       }`}
                     >
-                      {k.isActive ? "active" : "revoked"}
+                      {k.isActive ? t.pages.apiKeys.active : t.pages.apiKeys.revoked}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-sm text-slate-500">
                     {k.lastUsedAt
-                      ? new Date(k.lastUsedAt).toLocaleString()
-                      : "never"}
+                      ? new Date(k.lastUsedAt).toLocaleString(locale)
+                      : t.pages.apiKeys.never}
                   </td>
                   <td className="px-6 py-4 text-right">
                     {k.isActive && (
@@ -289,7 +288,7 @@ export default function ApiKeyManager({
                         onClick={() => handleRevoke(k.id)}
                         className="text-xs text-red-600 hover:text-red-800 font-medium"
                       >
-                        Revoke
+                        {t.pages.apiKeys.revoke}
                       </button>
                     )}
                   </td>

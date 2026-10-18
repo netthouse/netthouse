@@ -48,8 +48,8 @@ export default async function ApiKeysPage() {
   return (
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-6">{t.pages.apiKeys.title}</h1>
-      {orgId ? (
-        <ApiKeyManager userId={userId} orgId={orgId} keys={keys} />
+       {orgId ? (
+        <ApiKeyManager userId={userId} orgId={orgId} keys={keys} locale={locale as any} />
       ) : (
         <div className="bg-white rounded-lg shadow p-8 text-slate-500">
           Select an organization to manage API keys

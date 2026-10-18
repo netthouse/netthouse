@@ -3,6 +3,7 @@
 import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { apiFetch } from "@/lib/api";
+import { getDictionary, type Locale } from "@/i18n/dictionaries";
 
 type Account = {
   id: string;
@@ -24,10 +25,14 @@ const emptyEntries = (): EntryDraft[] => [
 export default function TransactionForm({
   userId,
   orgId,
+  locale,
 }: {
   userId: string;
   orgId: string;
+  locale: Locale;
 }) {
+  const t = getDictionary(locale);
+  const tf = t.pages.transactions;
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -77,22 +82,24 @@ export default function TransactionForm({
   const handleSubmit = () => {
     setError(null);
     if (!description.trim()) {
-      setError("Description is required");
+      setError(tf.errDescription);
       return;
     }
     if (entries.length < 2) {
-      setError("At least 2 entries are required");
+      setError(tf.errEntries);
       return;
     }
     for (const e of entries) {
       if (!e.accountId || !e.amount || Number(e.amount) <= 0) {
-        setError("Each entry needs an account and a positive amount");
+        setError(tf.errEntry);
         return;
       }
     }
     if (!balanced) {
       setError(
-        `Debits (${totals.debit.toFixed(2)}) must equal credits (${totals.credit.toFixed(2)})`
+        locale === "ru"
+          ? `Дебет (${totals.debit.toFixed(2)}) должен равняться кредиту (${totals.credit.toFixed(2)})`
+          : `Debits (${totals.debit.toFixed(2)}) must equal credits (${totals.credit.toFixed(2)})`
       );
       return;
     }
@@ -115,7 +122,7 @@ export default function TransactionForm({
   if (accounts.length < 2) {
     return (
       <div className="mb-6 p-4 border border-amber-300 bg-amber-50 rounded-lg text-sm text-amber-800">
-        You need at least 2 accounts in this organization to post a transaction.
+        {tf.needAccounts}
       </div>
     );
   }
@@ -126,27 +133,27 @@ export default function TransactionForm({
         onClick={() => setShowForm(!showForm)}
         className="px-4 py-2 bg-slate-900 text-white rounded-md hover:bg-slate-800 text-sm"
       >
-        + New transaction
+        {tf.newTransaction}
       </button>
 
       {showForm && (
         <div className="mt-4 p-4 border border-slate-200 rounded-lg bg-white space-y-4">
           <div>
-            <label className="block text-xs font-medium text-slate-500 mb-1">Description</label>
+            <label className="block text-xs font-medium text-slate-500 mb-1">{tf.description}</label>
             <input
               type="text"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm"
-              placeholder="e.g., Payment for services"
+              placeholder={tf.descriptionPlaceholder}
             />
           </div>
 
           <div className="space-y-2">
             <div className="grid grid-cols-12 gap-2 text-xs font-medium text-slate-500 uppercase">
-              <div className="col-span-5">Account</div>
-              <div className="col-span-3">Direction</div>
-              <div className="col-span-3">Amount</div>
+              <div className="col-span-5">{tf.account}</div>
+              <div className="col-span-3">{tf.direction}</div>
+              <div className="col-span-3">{tf.amount}</div>
               <div className="col-span-1"></div>
             </div>
             {entries.map((entry, i) => (
@@ -156,7 +163,7 @@ export default function TransactionForm({
                   onChange={(e) => updateEntry(i, { accountId: e.target.value })}
                   className="col-span-5 px-2 py-2 border border-slate-300 rounded-md text-sm"
                 >
-                  <option value="">— select —</option>
+                  <option value="">{tf.select}</option>
                   {accounts.map((acc) => (
                     <option key={acc.id} value={acc.id}>
                       {acc.currency} • {acc.id.slice(0, 8)}… ({Number(acc.balance).toFixed(2)})
@@ -170,8 +177,8 @@ export default function TransactionForm({
                   }
                   className="col-span-3 px-2 py-2 border border-slate-300 rounded-md text-sm"
                 >
-                  <option value="debit">debit (−)</option>
-                  <option value="credit">credit (+)</option>
+                  <option value="debit">{tf.debitOption}</option>
+                  <option value="credit">{tf.creditOption}</option>
                 </select>
                 <input
                   type="number"
@@ -195,10 +202,10 @@ export default function TransactionForm({
 
           <div className="flex items-center justify-between text-sm">
             <button onClick={addEntry} className="text-slate-600 hover:text-slate-900">
-              + Add entry
+              {tf.addEntry}
             </button>
             <div className={balanced ? "text-green-600 font-medium" : "text-slate-500"}>
-              Debit: {totals.debit.toFixed(2)} / Credit: {totals.credit.toFixed(2)}
+              {tf.debit}: {totals.debit.toFixed(2)} / {tf.credit}: {totals.credit.toFixed(2)}
               {balanced ? " ✓" : ""}
             </div>
           </div>
@@ -211,13 +218,13 @@ export default function TransactionForm({
               disabled={isPending}
               className="px-4 py-2 bg-slate-900 text-white rounded-md hover:bg-slate-800 text-sm disabled:opacity-50"
             >
-              {isPending ? "Posting..." : "Post transaction"}
+              {isPending ? tf.posting : tf.post}
             </button>
             <button
               onClick={() => setShowForm(false)}
               className="px-4 py-2 border border-slate-300 rounded-md text-sm hover:bg-slate-100"
             >
-              Cancel
+              {t.common.cancel}
             </button>
           </div>
         </div>
