@@ -52,7 +52,7 @@ await server.register(clearingRoutes);
 await server.register(apiKeyRoutes);
 await server.register(paymentRoutes);
 
-const port = Number(process.env.API_PORT ?? 3001);
+const port = Number(process.env.API_PORT ?? process.env.PORT ?? 3001);
 const host = process.env.API_HOST ?? "0.0.0.0";
 
 try {
