@@ -5,7 +5,7 @@ import { baseSepolia } from "viem/chains";
 import { exact } from "x402/schemes";
 
 const BUYER_PRIVATE_KEY = process.env.X402_BUYER_PRIVATE_KEY;
-const API_URL = "http://localhost:3001";
+const API_URL = process.env.API_URL ?? "http://localhost:3001";
 
 if (!BUYER_PRIVATE_KEY) {
   console.error("❌ X402_BUYER_PRIVATE_KEY не задан в .env");
