@@ -10,6 +10,7 @@ const en = {
     transactions: "Transactions",
     apiKeys: "API Keys",
     clearing: "Clearing",
+    payments: "Payments",
   },
   signOut: "Sign out",
   pages: {
@@ -45,6 +46,16 @@ const en = {
       noNetting: "No netting needed",
       noData: "No data available",
     },
+    payments: {
+      title: "x402 Payments",
+      txHash: "Tx Hash",
+      from: "Payer",
+      amount: "Amount",
+      resource: "Resource",
+      date: "Date",
+      empty: "No payments yet. Run demo-agent to create some.",
+      noOrg: "Select an organization to view payments",
+    },
   },
 };
 
@@ -58,6 +69,7 @@ const ru: Dictionary = {
     transactions: "Транзакции",
     apiKeys: "API ключи",
     clearing: "Клиринг",
+    payments: "Платежи",
   },
   signOut: "Выйти",
   pages: {
@@ -92,6 +104,16 @@ const ru: Dictionary = {
       netAmount: "Сумма",
       noNetting: "Взаимозачёт не требуется",
       noData: "Нет данных",
+    },
+    payments: {
+      title: "Платежи x402",
+      txHash: "Хеш транзакции",
+      from: "Плательщик",
+      amount: "Сумма",
+      resource: "Ресурс",
+      date: "Дата",
+      empty: "Платежей пока нет. Запустите demo-agent, чтобы создать.",
+      noOrg: "Выберите организацию, чтобы посмотреть платежи",
     },
   },
 };
