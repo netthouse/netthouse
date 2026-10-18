@@ -1,0 +1,18 @@
+{
+  "name": "@netthouse/sdk",
+  "version": "0.1.0",
+  "description": "Netthouse x402 client SDK — pay for HTTP resources with USDC",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "viem": "^2.21.26",
+    "x402": "^1.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}

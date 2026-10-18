@@ -3,6 +3,7 @@ import Fastify from "fastify";
 import cors from "@fastify/cors";
 import agentRoutes from "./routes/agents.js";
 import accountRoutes from "./routes/accounts.js";
+import paymentRoutes from "./routes/payments.js";
 import transactionRoutes from "./routes/transactions.js";
 import premiumRoutes from "./routes/premium.js";
 import clearingRoutes from "./routes/clearing.js";
@@ -49,6 +50,7 @@ await server.register(transactionRoutes);
 await server.register(premiumRoutes);
 await server.register(clearingRoutes);
 await server.register(apiKeyRoutes);
+await server.register(paymentRoutes);
 
 const port = Number(process.env.API_PORT ?? 3001);
 const host = process.env.API_HOST ?? "0.0.0.0";
