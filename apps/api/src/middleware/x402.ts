@@ -20,19 +20,16 @@ export interface X402Config {
   orgId?: string;
 }
 
-export async function x402Middleware(
-  request: FastifyRequest,
-  reply: FastifyReply,
+export function buildRequirements(
+  resource: string,
   config: X402Config
-): Promise<boolean> {
-  const paymentHeader = request.headers["x-payment"] as string | undefined;
-
-  const requirements: PaymentRequirements = {
+): PaymentRequirements {
+  return {
     scheme: "exact",
     network: "base-sepolia",
     payTo: SELLER_ADDRESS,
     maxAmountRequired: config.amount,
-    resource: request.url,
+    resource,
     description: config.description,
     mimeType: "application/json",
     maxTimeoutSeconds: 60,
@@ -42,6 +39,15 @@ export async function x402Middleware(
       version: "2",
     },
   };
+}
+export async function x402Middleware(
+  request: FastifyRequest,
+  reply: FastifyReply,
+  config: X402Config
+): Promise<boolean> {
+  const paymentHeader = request.headers["x-payment"] as string | undefined;
+
+  const requirements = buildRequirements(request.url, config);
 
   if (!paymentHeader) {
     reply

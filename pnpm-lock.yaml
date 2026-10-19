@@ -193,9 +193,9 @@ importers:
       '@netthouse/db':
         specifier: workspace:*
         version: link:../../packages/db
-      '@netthouse/x402':
+      '@netthouse/sdk':
         specifier: workspace:*
-        version: link:../../packages/x402
+        version: link:../../packages/sdk-typescript
       dotenv:
         specifier: ^18.0.8
         version: 18.0.8
