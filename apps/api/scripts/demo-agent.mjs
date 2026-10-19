@@ -1,68 +1,67 @@
 import "dotenv/config";
-import { createWalletClient, http } from "viem";
-import { privateKeyToAccount } from "viem/accounts";
-import { baseSepolia } from "viem/chains";
-import { exact } from "x402/schemes";
+import { createX402Client } from "@netthouse/sdk";
 
-const BUYER_PRIVATE_KEY = process.env.X402_BUYER_PRIVATE_KEY;
 const API_URL = process.env.API_URL ?? "http://localhost:3001";
+const BUYER_PK = process.env.X402_BUYER_PRIVATE_KEY;
 
-if (!BUYER_PRIVATE_KEY) {
-  console.error("❌ X402_BUYER_PRIVATE_KEY не задан в .env");
+if (!BUYER_PK) {
+  console.error("X402_BUYER_PRIVATE_KEY is not set in .env");
   process.exit(1);
 }
 
-const buyerAccount = privateKeyToAccount(BUYER_PRIVATE_KEY);
-const buyerClient = createWalletClient({
-  account: buyerAccount,
-  chain: baseSepolia,
-  transport: http(),
-});
+const client = createX402Client({ privateKey: BUYER_PK });
 
 async function main() {
-  console.log("🤖 Агент начинает запрос к премиум-данным...\n");
+  console.log("🤖 Агент начинает сессию...\n");
+  console.log(`   Адрес агента: ${client.address}`);
+  console.log(`   API:          ${API_URL}\n`);
 
-  // 1. Первый запрос без платежа
-  console.log("1️⃣  GET /premium/data (без X-PAYMENT)");
-  const res1 = await fetch(`${API_URL}/premium/data`);
-  console.log(`   Статус: ${res1.status}`);
+  // Шаг 1: discover — агент узнаёт, что можно купить
+  console.log("1️⃣  GET /discover (каталог ресурсов)");
+  const catalog = await client.discover(API_URL);
+  if (catalog.length === 0) {
+    console.error("   ❌ Каталог пуст — агенту нечего купить");
+    process.exit(1);
+  }
+  console.log(`   Найдено ресурсов: ${catalog.length}`);
+  for (const item of catalog) {
+    const req = item.accepts[0];
+    const price = (Number(req.maxAmountRequired) / 1_000_000).toFixed(2);
+    console.log(`   • ${item.resource}  —  ${price} USDC on ${req.network}`);
+  }
 
-  if (res1.status !== 402) {
-    console.error("❌ Ожидался 402, получен", res1.status);
+  // Шаг 2: выбираем первый USDC-ресурс на base-sepolia
+  const target = catalog.find((i) =>
+    i.accepts.some((r) => r.network === "base-sepolia" && r.asset)
+  );
+  if (!target) {
+    console.error("   ❌ Нет подходящего ресурса (USDC on base-sepolia)");
+    process.exit(1);
+  }
+  const targetUrl = `${API_URL.replace(/\/$/, "")}${target.resource}`;
+  console.log(`\n   → Выбран: ${target.resource}`);
+
+  // Шаг 3: fetch с автооплатой
+  console.log(`\n2️⃣  GET ${target.resource} (SDK сам подпишет и заплатит при 402)`);
+  const result = await client.fetch(targetUrl);
+
+  if (!result.response.ok) {
+    console.error(`   ❌ Запрос провалился: HTTP ${result.response.status}`);
+    const err = await result.response.text();
+    console.error("   Ответ:", err);
     process.exit(1);
   }
 
-  const body1 = await res1.json();
-  console.log("   Сервер требует оплату:", body1.requirements);
+  const data = await result.response.json();
+  console.log(`   ✅ Статус: ${result.response.status}`);
+  console.log(`   💰 Оплачено: ${result.paid ? "да" : "нет (кэш?)"}`);
+  console.log(`\n3️⃣  Данные от API:`);
+  console.log("   ", JSON.stringify(data, null, 2).split("\n").join("\n    "));
 
-  // 2. Создание подписанного платежа
-  console.log("\n2️⃣  Подписание платежа EIP-3009...");
-  const paymentPayload = await exact.evm.createPayment(
-    buyerClient,
-    1,
-    body1.requirements
-  );
-  const paymentHeader = exact.evm.encodePayment(paymentPayload);
-  console.log("   ✅ Платёж подписан");
-
-  // 3. Повторный запрос с X-PAYMENT
-  console.log("\n3️⃣  GET /premium/data (с X-PAYMENT)");
-  const res2 = await fetch(`${API_URL}/premium/data`, {
-    headers: { "X-PAYMENT": paymentHeader },
-  });
-  console.log(`   Статус: ${res2.status}`);
-
-  const body2 = await res2.json();
-  console.log("   Ответ:", body2);
-
-  // 4. Итог
-  console.log("\n🎉 Демо завершено!");
-  console.log(`   💰 Оплачено: ${body2.pricePaid}`);
-  console.log(`   🔗 TxHash: ${body2.txHash}`);
-  console.log(`   📊 Данные: ${body2.data}`);
+  console.log("\n🎉 Демо завершено! Полный цикл: discover → select → pay → consume");
 }
 
 main().catch((err) => {
-  console.error("❌ Ошибка:", err.message);
+  console.error("Fatal:", err);
   process.exit(1);
 });

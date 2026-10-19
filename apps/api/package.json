@@ -15,7 +15,7 @@
     "@fastify/env": "^4.0.0",
     "@netthouse/clearing": "workspace:*",
     "@netthouse/db": "workspace:*",
-    "@netthouse/x402": "workspace:*",
+    "@netthouse/sdk": "workspace:*",
     "dotenv": "^18.0.8",
     "drizzle-orm": "^0.40.0",
     "fastify": "^5.0.0",
