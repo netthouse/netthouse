@@ -10,7 +10,16 @@ const USDC_ADDRESSES: Record<string, string> = {
   "base": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
 };
 
-const NETWORK = process.env.X402_NETWORK ?? "base-sepolia";
+// Поддерживаемые сети (подмножество union-типа Network из x402)
+const SUPPORTED_NETWORKS = ["base-sepolia", "base"] as const;
+type SupportedNetwork = (typeof SUPPORTED_NETWORKS)[number];
+
+const rawNetwork = process.env.X402_NETWORK ?? "base-sepolia";
+const NETWORK: SupportedNetwork = (
+  SUPPORTED_NETWORKS as readonly string[]
+).includes(rawNetwork)
+  ? (rawNetwork as SupportedNetwork)
+  : "base-sepolia";
 const SELLER_ADDRESS = process.env.X402_SELLER_ADDRESS as string;
 const USDC_ADDRESS =
   process.env.X402_USDC_ADDRESS ?? USDC_ADDRESSES[NETWORK] ?? "";
