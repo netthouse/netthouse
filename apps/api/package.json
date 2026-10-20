@@ -8,7 +8,9 @@
     "start": "tsx src/index.ts",
     "build": "echo 'no build'",
     "typecheck": "tsc --noEmit",
-    "lint": "echo 'no lint yet'"
+    "lint": "echo 'no lint yet'",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@fastify/cors": "^10.0.0",
@@ -28,6 +30,7 @@
     "@types/node": "^20.0.0",
     "drizzle-kit": "^0.30.0",
     "tsx": "^4.0.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "vitest": "^5.0.5"
   }
 }
