@@ -4,8 +4,24 @@ import { useFacilitator } from "x402/verify";
 import type { PaymentRequirements } from "x402/types";
 import { db, x402Payments } from "@netthouse/db";
 
-const USDC_BASE_SEPOLIA = "0x036CbD53842c5426634e7929541eC2318f3dCF7e";
+// USDC адреса для разных сетей
+const USDC_ADDRESSES: Record<string, string> = {
+  "base-sepolia": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+  "base": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+};
+
+const NETWORK = process.env.X402_NETWORK ?? "base-sepolia";
 const SELLER_ADDRESS = process.env.X402_SELLER_ADDRESS as string;
+const USDC_ADDRESS =
+  process.env.X402_USDC_ADDRESS ?? USDC_ADDRESSES[NETWORK] ?? "";
+
+if (!SELLER_ADDRESS) {
+  throw new Error("X402_SELLER_ADDRESS must be set in .env");
+}
+
+if (!USDC_ADDRESS) {
+  throw new Error(`USDC address not found for network "${NETWORK}"`);
+}
 
 if (!SELLER_ADDRESS) {
   throw new Error("X402_SELLER_ADDRESS must be set in .env");
@@ -26,14 +42,14 @@ export function buildRequirements(
 ): PaymentRequirements {
   return {
     scheme: "exact",
-    network: "base-sepolia",
+    network: NETWORK,
     payTo: SELLER_ADDRESS,
     maxAmountRequired: config.amount,
     resource,
     description: config.description,
     mimeType: "application/json",
     maxTimeoutSeconds: 60,
-    asset: USDC_BASE_SEPOLIA,
+    asset: USDC_ADDRESS,
     extra: {
       name: "USDC",
       version: "2",
@@ -100,7 +116,7 @@ export async function x402Middleware(
         fromAddress: evmPayload.authorization.from,
         toAddress: requirements.payTo,
         amount: config.amount,
-        network: "base-sepolia",
+        network: NETWORK,
         resource: requirements.resource,
         description: config.description,
       });
