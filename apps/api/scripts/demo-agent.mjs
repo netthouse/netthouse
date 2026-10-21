@@ -31,11 +31,12 @@ async function main() {
   }
 
   // Шаг 2: выбираем первый USDC-ресурс на base-sepolia
+    const NETWORK = process.env.X402_NETWORK ?? "base";
   const target = catalog.find((i) =>
-    i.accepts.some((r) => r.network === "base-sepolia" && r.asset)
+    i.accepts.some((r) => r.network === NETWORK && r.asset)
   );
   if (!target) {
-    console.error("   ❌ Нет подходящего ресурса (USDC on base-sepolia)");
+    console.error(`   ❌ Нет подходящего ресурса (USDC on ${NETWORK})`);
     process.exit(1);
   }
   const targetUrl = `${API_URL.replace(/\/$/, "")}${target.resource}`;
