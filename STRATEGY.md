@@ -289,22 +289,28 @@
 
 \---
 
+## 5.5. Собственный facilitator (в процессе)
+
+**Проблема:** публичный facilitator x402.org не поддерживает mainnet.
+**Решение:** локальные функции `verify()`/`settle()` внутри нашего API через SDK x402.
+**Что готово:**
+- ✅ Модуль `src/facilitator/index.ts` (viem + x402/facilitator)
+- ✅ Поддержка Base mainnet и Base Sepolia через env
+- ✅ Переключение через `X402_NETWORK` и `X402_FACILITATOR_PRIVATE_KEY`
+**Что осталось:**
+- ⏳ ETH на газовом кошельке `0x2a0F3c5CC59e916E7DB5e3dDC3aEfB632EB2059e` ($3-5)
+- ⏳ Переключение middleware (src/middleware/x402.ts) на локальный facilitator
+- ⏳ Smoke-тест mainnet
+**Блокер:** пополнение ETH через Bybit (или Coinbase)
 
 
-\## 6. Ближайшие шаги (эта неделя)
-
-- [ ] Собственный facilitator (verify/settle внутри API) → разблокирует mainnet
-
-\- \[ ] Пополнение USDC → mainnet smoke-тест
-
-\- \[ ] npm publish @netthouse/sdk
-
-\- \[ ] GitHub open-source
-
-\- \[ ] Аккаунты Twitter/Discord
-
-\- \[ ] Пост Show HN
-
+## 6. Ближайшие шаги (эта неделя)
+- [ ] Пополнение газового кошелька ETH на Base (~$3-5 через Bybit)
+- [ ] Переключение middleware на локальный facilitator (код готов: src/facilitator/)
+- [ ] Mainnet smoke-тест $0.10 (txHash → basescan.org)
+- [ ] npm publish @netthouse/sdk
+- [ ] GitHub open-source SDK (README, LICENSE)
+- [ ] Пост на Hacker News / Twitter
 
 
 \---
