@@ -1,6 +1,6 @@
 {
   "name": "@netthouse/sdk",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Netthouse x402 client SDK — pay for HTTP resources with USDC",
   "type": "module",
   "main": "./src/index.ts",
