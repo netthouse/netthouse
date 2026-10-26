@@ -40,6 +40,9 @@
 
 \- ✅ Discovery: GET /discover (спека x402)
 
+- ✅ Каталог: 4 платных ресурса (premium/data, market-data, agent-news, fx-rates)
+- ✅ Цены: $0.05-$0.25 USDC за запрос
+
 \- ✅ Прод-деплой: Neon (Postgres) + Render (API+web) + Cloudflare (DNS)
 
 
