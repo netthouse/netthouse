@@ -1,16 +1,27 @@
 import { FastifyInstance } from "fastify";
 import { buildRequirements, type X402Config } from "../middleware/x402.js";
 
-// Каталог платных ресурсов. Здесь же в будущем появятся новые тарифы.
+// Каталог платных ресурсов
 const CATALOG: { resource: string; config: X402Config }[] = [
   {
     resource: "/premium/data",
     config: { amount: "100000", description: "Premium data access" },
   },
+  {
+    resource: "/market-data",
+    config: { amount: "50000", description: "Crypto market snapshot" },
+  },
+  {
+    resource: "/agent-news",
+    config: { amount: "100000", description: "AI agent ecosystem news" },
+  },
+  {
+    resource: "/fx-rates",
+    config: { amount: "250000", description: "Real-time FX rates for agents" },
+  },
 ];
 
 export default async function discoverRoutes(fastify: FastifyInstance) {
-  // Публичный эндпоинт: агент узнаёт, что у нас можно купить и по какой цене
   fastify.get("/discover", async () => {
     const items = CATALOG.map(({ resource, config }) => ({
       resource,
