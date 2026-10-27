@@ -1,8 +1,8 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { exact } from "x402/schemes";
-import { useFacilitator } from "x402/verify";
 import type { PaymentRequirements } from "x402/types";
 import { db, x402Payments } from "@netthouse/db";
+import * as facilitator from "../facilitator/index.js";
 
 // USDC адреса для разных сетей
 const USDC_ADDRESSES: Record<string, string> = {
@@ -36,8 +36,6 @@ if (!SELLER_ADDRESS) {
   throw new Error("X402_SELLER_ADDRESS must be set in .env");
 }
 
-// Публичный facilitator от x402.org — верифицирует подписи и проводит платежи
-const facilitator = useFacilitator();
 
 export interface X402Config {
   amount: string;
