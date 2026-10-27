@@ -24,6 +24,8 @@
 
 \- ✅ TypeScript SDK: @netthouse/sdk (discover + fetch с автооплатой) 
 
+\- ✅ Python SDK: `pip install netthouse` (pypi.org/project/netthouse, v0.1.0, первая оплата tx 0xf9f758...)
+
 \- ✅ Python SDK: `pip install netthouse` (готов, тестовая оплата 0.05 USDC на tx 0xf9f758...)
 
 \- ✅ Демо-агент: полный цикл discover → pay → consume
