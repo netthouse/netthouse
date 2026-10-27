@@ -22,7 +22,9 @@
 
 \- ✅ Публичный API: netthouse-api.onrender.com
 
-\- ✅ TypeScript SDK: @netthouse/sdk (discover + fetch с автооплатой)
+\- ✅ TypeScript SDK: @netthouse/sdk (discover + fetch с автооплатой) 
+
+\- ✅ Python SDK: `pip install netthouse` (готов, тестовая оплата 0.05 USDC на tx 0xf9f758...)
 
 \- ✅ Демо-агент: полный цикл discover → pay → consume
 
