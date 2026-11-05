@@ -7,10 +7,7 @@ import {
 import { privateKeyToAccount } from "viem/accounts";
 import { base, baseSepolia } from "viem/chains";
 import { verify as sdkVerify, settle as sdkSettle } from "x402/facilitator";
-import type {
-  PaymentPayload,
-  PaymentRequirements,
-} from "x402/types";
+import type { PaymentPayload, PaymentRequirements } from "x402/types";
 
 const NETWORK = process.env.X402_NETWORK ?? "base-sepolia";
 const CHAIN: Chain = NETWORK === "base" ? base : baseSepolia;
@@ -19,22 +16,19 @@ const RPC_URL =
     ? "https://mainnet.base.org"
     : "https://sepolia.base.org";
 
+const USDC_ADDRESSES: Record<string, string> = {
+  "base-sepolia": "0x036CbD53842c5426634e7929541eC2318f3dCF7e",
+  "base": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+};
+
+const USDC_ADDRESS =
+  process.env.X402_USDC_ADDRESS ?? USDC_ADDRESSES[NETWORK] ?? "";
+
 /**
- * Локальный facilitator: вместо обращения к публичному x402.org
- * мы сами верифицируем подпись и сами отправляем settle-транзакцию.
- *
- * Требуется X402_FACILITATOR_PRIVATE_KEY — приватный ключ газового кошелька.
- * У него должен быть ETH (Base mainnet) или test ETH (Sepolia) для оплаты газа.
+ * Объединённый клиент: PublicClient (readContract, verifyTypedData)
+ * + WalletClient (sign, sendTransaction). Именно такой ожидает x402 SDK.
  */
-
-function getPublicClient() {
-  return createPublicClient({
-    chain: CHAIN,
-    transport: http(RPC_URL),
-  });
-}
-
-function getSigner() {
+function getClient() {
   const pk = process.env.X402_FACILITATOR_PRIVATE_KEY as
     | `0x${string}`
     | undefined;
@@ -44,25 +38,30 @@ function getSigner() {
     );
   }
   const account = privateKeyToAccount(pk);
-  return createWalletClient({
+  const publicClient = createPublicClient({
+    chain: CHAIN,
+    transport: http(RPC_URL),
+  });
+  const walletClient = createWalletClient({
     account,
     chain: CHAIN,
     transport: http(RPC_URL),
   });
+  return { ...publicClient, ...walletClient };
 }
 
 export async function verify(
   payload: PaymentPayload,
   requirements: PaymentRequirements
 ) {
-  const client = getPublicClient();
-  return sdkVerify(client as any, payload, requirements);
+  const client = getClient() as any;
+  return sdkVerify(client, payload, requirements);
 }
 
 export async function settle(
   payload: PaymentPayload,
   requirements: PaymentRequirements
 ) {
-  const signer = getSigner();
-  return sdkSettle(signer as any, payload, requirements);
+  const client = getClient() as any;
+  return sdkSettle(client, payload, requirements);
 }

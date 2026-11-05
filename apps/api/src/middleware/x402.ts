@@ -1,7 +1,9 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { exact } from "x402/schemes";
 import type { PaymentRequirements } from "x402/types";
-import { db, x402Payments } from "@netthouse/db";
+import { db, x402Payments, organizations, subscriptions } from "@netthouse/db";
+import { eq } from "drizzle-orm";
+import { organizations } from "@netthouse/db";
 import * as facilitator from "../facilitator/index.js";
 
 // USDC адреса для разных сетей
@@ -57,8 +59,8 @@ export function buildRequirements(
     mimeType: "application/json",
     maxTimeoutSeconds: 60,
     asset: USDC_ADDRESS,
-    extra: {
-      name: "USDC",
+       extra: {
+      name: NETWORK === "base" ? "USD Coin" : "USDC",
       version: "2",
     },
   };
@@ -68,6 +70,23 @@ export async function x402Middleware(
   reply: FastifyReply,
   config: X402Config
 ): Promise<boolean> {
+    // Проверяем что организация не suspended
+  if (config.orgId) {
+    const org = await db
+      .select({ isSuspended: organizations.isSuspended })
+      .from(organizations)
+      .where(eq(organizations.id, config.orgId))
+      .limit(1);
+
+    if (org.length > 0 && org[0].isSuspended) {
+      reply.status(403).send({
+        error: "Organization suspended",
+        message: "This seller is temporarily suspended and cannot accept payments",
+      });
+      return false;
+    }
+  }
+
   const paymentHeader = request.headers["x-payment"] as string | undefined;
 
   const requirements = buildRequirements(request.url, config);
@@ -115,6 +134,23 @@ export async function x402Middleware(
 
         const txHash = settleResponse.transaction ?? "";
 
+    // Расчёт комиссии по тарифу организации (Free=10%, Pro=5%, Enterprise=2%)
+    let feePercent = BigInt(10);
+    if (config.orgId) {
+      const sub = await db
+        .select({ tier: subscriptions.tier })
+        .from(subscriptions)
+        .where(eq(subscriptions.orgId, config.orgId))
+        .limit(1);
+      const tier = sub[0]?.tier ?? "free";
+      if (tier === "pro") feePercent = BigInt(5);
+      else if (tier === "enterprise") feePercent = BigInt(2);
+    }
+
+    const totalAmount = BigInt(config.amount);
+    const feeAmount = (totalAmount * feePercent) / BigInt(100);
+    const sellerAmount = totalAmount - feeAmount;
+
     // Записываем платёж в БД
     try {
       await db.insert(x402Payments).values({
@@ -123,6 +159,9 @@ export async function x402Middleware(
         fromAddress: evmPayload.authorization.from,
         toAddress: requirements.payTo,
         amount: config.amount,
+        feeAmount: feeAmount.toString(),
+        feeAddress: process.env.NETTHOUSE_FEE_ADDRESS ?? "",
+        sellerAmount: sellerAmount.toString(),
         network: NETWORK,
         resource: requirements.resource,
         description: config.description,
