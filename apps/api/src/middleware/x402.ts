@@ -3,7 +3,6 @@ import { exact } from "x402/schemes";
 import type { PaymentRequirements } from "x402/types";
 import { db, x402Payments, organizations, subscriptions } from "@netthouse/db";
 import { eq } from "drizzle-orm";
-import { organizations } from "@netthouse/db";
 import * as facilitator from "../facilitator/index.js";
 
 // USDC адреса для разных сетей
@@ -25,10 +24,6 @@ const NETWORK: SupportedNetwork = (
 const SELLER_ADDRESS = process.env.X402_SELLER_ADDRESS as string;
 const USDC_ADDRESS =
   process.env.X402_USDC_ADDRESS ?? USDC_ADDRESSES[NETWORK] ?? "";
-
-if (!SELLER_ADDRESS) {
-  throw new Error("X402_SELLER_ADDRESS must be set in .env");
-}
 
 if (!USDC_ADDRESS) {
   throw new Error(`USDC address not found for network "${NETWORK}"`);
@@ -78,7 +73,7 @@ export async function x402Middleware(
       .where(eq(organizations.id, config.orgId))
       .limit(1);
 
-    if (org.length > 0 && org[0].isSuspended) {
+    if (org.length > 0 && org[0]?.isSuspended) {
       reply.status(403).send({
         error: "Organization suspended",
         message: "This seller is temporarily suspended and cannot accept payments",
@@ -105,6 +100,10 @@ export async function x402Middleware(
 
   try {
     const payload = exact.evm.decodePayment(paymentHeader);
+     if (!payload || !payload.payload) {
+      reply.status(402).send({ error: "Invalid payment payload" });
+      return false;
+    }
     // Сужаем union-тип payload до EVM-варианта (Base Sepolia)
     const evmPayload = payload.payload as {
       authorization: { from: string; to: string; value: string };
@@ -142,7 +141,7 @@ export async function x402Middleware(
         .from(subscriptions)
         .where(eq(subscriptions.orgId, config.orgId))
         .limit(1);
-      const tier = sub[0]?.tier ?? "free";
+            const tier = sub[0]?.tier ?? "free";
       if (tier === "pro") feePercent = BigInt(5);
       else if (tier === "enterprise") feePercent = BigInt(2);
     }
