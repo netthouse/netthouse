@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 import { db, subscriptions, organizations } from "@netthouse/db";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-01-27.acacia",
+    apiVersion: "2026-10-28.endive",
 });
 
 // Тарифы
@@ -25,16 +25,17 @@ export default async function billingRoutes(fastify: FastifyInstance) {
       .where(eq(subscriptions.orgId, orgId))
       .limit(1);
 
-    if (sub.length === 0) {
+    const subRow = sub[0];
+    if (!subRow) {
       return { tier: "free", commissionPercent: 10, status: "active" };
     }
 
-    const tier = sub[0].tier as keyof typeof TIERS;
+    const tier = subRow.tier as keyof typeof TIERS;
     return {
-      tier: sub[0].tier,
+      tier: subRow.tier,
       commissionPercent: TIERS[tier]?.commissionPercent ?? 10,
-      status: sub[0].status,
-      currentPeriodEnd: sub[0].currentPeriodEnd,
+      status: subRow.status,
+      currentPeriodEnd: subRow.currentPeriodEnd,
     };
   });
 
@@ -52,7 +53,8 @@ export default async function billingRoutes(fastify: FastifyInstance) {
       .where(eq(organizations.id, orgId))
       .limit(1);
 
-    if (org.length === 0) {
+    const orgRow = org[0];
+    if (!orgRow) {
       return reply.status(404).send({ error: "Organization not found" });
     }
 
@@ -67,7 +69,7 @@ export default async function billingRoutes(fastify: FastifyInstance) {
 
     if (!customerId) {
       const customer = await stripe.customers.create({
-        name: org[0].name,
+        name: orgRow.name,
         metadata: { orgId },
       });
       customerId = customer.id;
@@ -134,7 +136,9 @@ export default async function billingRoutes(fastify: FastifyInstance) {
               tier,
               stripeSubscriptionId: subscription.id,
               status: subscription.status,
-              currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+              currentPeriodEnd: subscription.items?.data?.[0]?.current_period_end
+                ? new Date(subscription.items.data[0].current_period_end * 1000)
+                : null,
               updatedAt: new Date(),
             })
             .where(eq(subscriptions.orgId, orgId));
