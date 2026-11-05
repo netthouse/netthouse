@@ -10,6 +10,8 @@ import clearingRoutes from "./routes/clearing.js";
 import apiKeyRoutes from "./routes/api-keys.js";
 import { organizationRoutes } from "./routes/organizations.js";
 import discoverRoutes from "./routes/discover.js";
+import commissionRoutes from "./routes/commission.js";
+import billingRoutes from "./routes/billing.js";
 
 const server = Fastify({ logger: true });
 
@@ -53,6 +55,8 @@ await server.register(clearingRoutes);
 await server.register(apiKeyRoutes);
 await server.register(paymentRoutes);
 await server.register(discoverRoutes);
+await server.register(commissionRoutes);
+await server.register(billingRoutes);
 
 const port = Number(process.env.API_PORT ?? process.env.PORT ?? 3001);
 const host = process.env.API_HOST ?? "0.0.0.0";

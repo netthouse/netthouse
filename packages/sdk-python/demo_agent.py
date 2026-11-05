@@ -2,7 +2,7 @@ import os
 
 from netthouse import X402Client
 
-API = "https://netthouse-api.onrender.com"
+API = "http://localhost:3001"
 
 client = X402Client(private_key=os.environ["X402_BUYER_PRIVATE_KEY"])
 print("Agent address:", client.address)

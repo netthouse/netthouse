@@ -5,11 +5,12 @@ const NETWORK = process.env.X402_NETWORK ?? "base-sepolia";
 
 export default async function premiumRoutes(fastify: FastifyInstance) {
   // === Helper для создания платного роута ===
-  const paidRoute = (priceMicro: string, description: string, dataFn: () => any) => {
+    const paidRoute = (priceMicro: string, description: string, orgId: string, dataFn: () => any) => {
     return async (request: any, reply: any) => {
-      const paid = await x402Middleware(request, reply, {
+       const paid = await x402Middleware(request, reply, {
         amount: priceMicro,
         description,
+        orgId,
       });
       if (!paid) return;
 
@@ -28,9 +29,9 @@ export default async function premiumRoutes(fastify: FastifyInstance) {
   };
 
   // === /premium/data — 0.10 USDC ===
-  fastify.get(
+    fastify.get(
     "/premium/data",
-    paidRoute("100000", "Premium data access", () => ({
+    paidRoute("100000", "Premium data access", "95f60a9c-6f41-48b2-87fe-b13f9ee61871", () => ({
       type: "market-insights",
       summary: "AI agent payments grew 340% in 2026",
       highlights: [
@@ -42,9 +43,9 @@ export default async function premiumRoutes(fastify: FastifyInstance) {
   );
 
   // === /market-data — 0.05 USDC ===
-  fastify.get(
+    fastify.get(
     "/market-data",
-    paidRoute("50000", "Crypto market snapshot", () => ({
+    paidRoute("50000", "Crypto market snapshot", "95f60a9c-6f41-48b2-87fe-b13f9ee61871", () => ({
       timestamp: new Date().toISOString(),
       assets: [
         { symbol: "BTC", price: 84530.12, change24h: 2.3 },
@@ -57,9 +58,9 @@ export default async function premiumRoutes(fastify: FastifyInstance) {
   );
 
   // === /agent-news — 0.10 USDC ===
-  fastify.get(
+    fastify.get(
     "/agent-news",
-    paidRoute("100000", "AI agent ecosystem news", () => ({
+    paidRoute("100000", "AI agent ecosystem news", "95f60a9c-6f41-48b2-87fe-b13f9ee61871", () => ({
       date: new Date().toISOString().slice(0, 10),
       headlines: [
         {
@@ -87,9 +88,9 @@ export default async function premiumRoutes(fastify: FastifyInstance) {
   );
 
   // === /fx-rates — 0.25 USDC ===
-  fastify.get(
+    fastify.get(
     "/fx-rates",
-    paidRoute("250000", "Real-time FX rates for agents", () => ({
+    paidRoute("250000", "Real-time FX rates for agents", "95f60a9c-6f41-48b2-87fe-b13f9ee61871", () => ({
       base: "USD",
       timestamp: new Date().toISOString(),
       rates: {

@@ -30,6 +30,8 @@ export default function Sidebar({
     { href: "/api-keys", label: t.nav.apiKeys },
     { href: "/clearing", label: t.nav.clearing },
     { href: "/payments", label: t.nav.payments },
+    { href: "/commission", label: t.nav.commission },
+    { href: "/billing", label: t.nav.billing ?? "Billing" },
   ];
 
   return (

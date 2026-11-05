@@ -5,6 +5,9 @@ export const organizations = pgTable("organizations", {
   name: varchar("name", { length: 200 }).notNull(),
   slug: varchar("slug", { length: 100 }).notNull().unique(),
     clerkUserId: varchar("clerk_user_id", { length: 255 }),
+  isSuspended: boolean("is_suspended").default(false),
+  suspendedAt: timestamp("suspended_at", { withTimezone: true }),
+  suspensionReason: varchar("suspension_reason", { length: 500 }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
@@ -80,10 +83,29 @@ export const x402Payments = pgTable(
     fromAddress: varchar("from_address", { length: 42 }).notNull(),
     toAddress: varchar("to_address", { length: 42 }).notNull(),
     amount: numeric("amount", { precision: 20, scale: 6 }).notNull(),
+    feeAmount: numeric("fee_amount", { precision: 20, scale: 6 }),
+    feeAddress: varchar("fee_address", { length: 42 }),
+    sellerAmount: numeric("seller_amount", { precision: 20, scale: 6 }),
     network: varchar("network", { length: 50 }).notNull().default("base-sepolia"),
     resource: varchar("resource", { length: 500 }).notNull(),
     description: varchar("description", { length: 500 }),
+    commissionPaid: boolean("commission_paid").default(false),
+    commissionPaidAt: timestamp("commission_paid_at", { withTimezone: true }),
+    commissionPaidTxHash: varchar("commission_paid_tx_hash", { length: 66 }),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [index("x402_payments_org_idx").on(t.orgId)]
 );
+export const subscriptions = pgTable("subscriptions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  orgId: uuid("org_id")
+    .notNull()
+    .references(() => organizations.id, { onDelete: "cascade" }),
+  tier: varchar("tier", { length: 50 }).notNull().default("free"),
+  stripeCustomerId: varchar("stripe_customer_id", { length: 255 }),
+  stripeSubscriptionId: varchar("stripe_subscription_id", { length: 255 }),
+  status: varchar("status", { length: 50 }).notNull().default("active"),
+  currentPeriodEnd: timestamp("current_period_end", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
