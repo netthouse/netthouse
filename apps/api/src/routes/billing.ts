@@ -123,6 +123,34 @@ export default async function billingRoutes(fastify: FastifyInstance) {
     const event = request.body as Stripe.Event;
 
     switch (event.type) {
+      case "invoice.paid": {
+        const invoice = event.data.object as Stripe.Invoice;
+        const subscriptionId = invoice.subscription as string;
+
+        if (subscriptionId) {
+          const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+          const orgId = subscription.metadata?.orgId;
+          const tier = subscription.metadata?.tier ?? "pro";
+
+          if (orgId) {
+            await db
+              .update(subscriptions)
+              .set({
+                tier,
+                stripeSubscriptionId: subscription.id,
+                status: subscription.status,
+                currentPeriodEnd: subscription.items?.data?.[0]?.current_period_end
+                  ? new Date(subscription.items.data[0].current_period_end * 1000)
+                  : null,
+                updatedAt: new Date(),
+              })
+              .where(eq(subscriptions.orgId, orgId));
+
+            console.log(`✅ Updated subscription for org ${orgId}: tier=${tier}`);
+          }
+        }
+        break;
+      }
       case "customer.subscription.created":
       case "customer.subscription.updated": {
         const subscription = event.data.object as Stripe.Subscription;
