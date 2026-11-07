@@ -49,16 +49,18 @@
 - ✅ `marketing/hn-show.md` (Show HN)
 - ✅ `marketing/twitter-launch.md` (Twitter тред)
 - ✅ `marketing/devto-article.md` (статья на dev.to)
+- ✅ dev.to статья: https://dev.to/zhasulan391/how-we-built-x402-payments-for-ai-agents-on-base-mainnet-1ado
+- ✅ Twitter/X @netthouse: launch-тред из 4 твитов
 
 ### Осталось (3%)
 
-- [ ] Stripe webhook на production (endpoint + whsec в Render)
+- [x] Stripe webhook на production (invoice.paid → 200 OK, Delivered)
 - [ ] Stripe live mode + реквизиты ИП Казахстан (валюта USDT→USDC)
 - [ ] Cron авто-суспенда на Render (`check-suspensions`)
-- [ ] Публикация SDK на npm
-- [ ] GitHub README для SDK (LICENSE, Contributing, badges)
+- [x] Публикация SDK на npm (@netthouse/sdk 0.1.3)
+- [x] GitHub README для SDK
 - [ ] Больше ресурсов в каталоге (сейчас 4, цель 10+)
-- [ ] Маркетинг: публикация HN + Twitter + dev.to
+- [x] Маркетинг: dev.to статья + Twitter тред (4 твита)
 - [ ] Мониторинг (Sentry, logging)
 - [ ] Аналитика (сколько платежей, какие агенты)
 - [ ] DMARC запись в Cloudflare (опционально)
