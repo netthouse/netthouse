@@ -1,14 +1,15 @@
+cd /d D:\netthouse && powershell -Command "Set-Content -Path 'STRATEGY.md' -Encoding UTF8 -Value @'
 # Netthouse — Стратегический план 2026
 
 > Документ создан: 21.10.2026
-> Последнее обновление: 06.11.2026
-> Статус: MVP-ready, production запущен, mainnet работает
+> Последнее обновление: 07.11.2026
+> Статус: MVP-ready, production запущен, маркетинг стартовал
 
 ---
 
-## 1. Текущее состояние (на 06.11.2026)
+## 1. Текущее состояние (на 07.11.2026)
 
-### Готово (97%)
+### Готово (98%)
 
 **Инфраструктура:**
 - ✅ x402 протокол: HTTP 402 → EIP-3009 → USDC на Base mainnet
@@ -23,7 +24,7 @@
 - ✅ Dashboard: организации, счета, транзакции, API ключи, клиринг, платежи, комиссия, биллинг
 - ✅ Каталог /discover: 4 платных ресурса (premium/data, market-data, agent-news, fx-rates)
 - ✅ Цены: $0.05-$0.25 USDC за запрос
-- ✅ TypeScript SDK: @netthouse/sdk (локально, готов к publish)
+- ✅ TypeScript SDK: @netthouse/sdk (npm 0.1.3, опубликован)
 - ✅ Python SDK: `pip install netthouse` (PyPI, v0.1.0, первая оплата tx 0xf9f758...)
 - ✅ Демо-агент: полный цикл discover → pay → consume
 - ✅ Тесты: 8 passing (vitest)
@@ -36,7 +37,7 @@
 **Монетизация (полный цикл замкнут):**
 - ✅ 3 тарифа: Free $0 (10%), Pro $29/мес (5%), Enterprise $299/мес (2%)
 - ✅ Stripe Checkout + подписки (test mode)
-- ✅ Webhook обновляет тариф в БД
+- ✅ Webhook обновляет тариф в БД (invoice.paid → 200 OK, Delivered)
 - ✅ Middleware x402 читает тариф → комиссия динамическая
 - ✅ Страница /billing с переключателем языков (RU+EN)
 - ✅ Доказательство: транзакция с комиссией 5% вместо 10% для Pro
@@ -45,31 +46,29 @@
 - ✅ `is_suspended` у организации → 403 на платежи + скрытие из /discover
 - ✅ Скрипт `packages/db/src/check-suspensions.ts` готов (ждёт cron)
 
-**Маркетинг (черновики готовы):**
-- ✅ `marketing/hn-show.md` (Show HN)
-- ✅ `marketing/twitter-launch.md` (Twitter тред)
+**Маркетинг (опубликовано):**
+- ✅ `marketing/hn-show.md` (Show HN черновик готов, ждёт кармы)
+- ✅ `marketing/twitter-launch.md` (Twitter тред черновик готов)
 - ✅ `marketing/devto-article.md` (статья на dev.to)
 - ✅ dev.to статья: https://dev.to/zhasulan391/how-we-built-x402-payments-for-ai-agents-on-base-mainnet-1ado
 - ✅ Twitter/X @netthouse: launch-тред из 4 твитов
+- ✅ Reddit r/Base: https://www.reddit.com/r/BASE/comments/1xq55h4/built_opensource_payment_infrastructure_for_ai/
+- ✅ Reddit r/ethdev: https://www.reddit.com/r/ethdev/comments/1xq4ml0/we_built_opensource_x402_payment_infrastructure/
 
-### Осталось (3%)
+### Осталось (2%)
 
-- [x] Stripe webhook на production (invoice.paid → 200 OK, Delivered)
 - [ ] Stripe live mode + реквизиты ИП Казахстан (валюта USDT→USDC)
 - [ ] Cron авто-суспенда на Render (`check-suspensions`)
-- [x] Публикация SDK на npm (@netthouse/sdk 0.1.3)
-- [x] GitHub README для SDK
 - [ ] Больше ресурсов в каталоге (сейчас 4, цель 10+)
-- [x] Маркетинг: dev.to статья + Twitter тред (4 твита)
 - [ ] Мониторинг (Sentry, logging)
 - [ ] Аналитика (сколько платежей, какие агенты)
 - [ ] DMARC запись в Cloudflare (опционально)
 - [ ] Русская версия лендинга netthouse.com (сейчас только EN)
 - [ ] Собственная система входа (заменить Clerk на NextAuth.js или кастомный UI)
 - [ ] Увеличить скорость загрузки (убрать cold start Render free → VPS или Render paid)
-- [ ] Опционально: замена Clerk на NextAuth (независимость от стороннего auth)
-- [ ] Опционально: переезд с Render на VPS (~$4/мес) при появлении клиентов
- Render paid)
+- [ ] Маркетинг: Hacker News Show HN (нужна карма, ~1 неделя)
+- [ ] Маркетинг: Product Hunt (после первых откликов)
+- [ ] Мониторинг откликов на dev.to / Twitter / Reddit
 
 ---
 
@@ -92,14 +91,15 @@
 ## 3. План на 3 месяца
 
 ### Месяц 1: Запуск и первые пользователи
-1. Закрыть Stripe webhook на production
+1. ~~Закрыть Stripe webhook на production~~ ✅ (07.11.2026)
 2. Переключить Stripe в live mode + подключить реквизиты ИП
 3. Настроить cron для check-suspensions
-4. Опубликовать SDK на npm
-5. GitHub open-source (SDK + demo-agent): README, LICENSE, Contributing
-6. Запустить Twitter/X + Discord
-7. Пост на Hacker News (Show HN)
-8. **Цель: 50 первых пользователей, 100 платежей**
+4. ~~Опубликовать SDK на npm~~ ✅ (@netthouse/sdk 0.1.3)
+5. ~~GitHub open-source (SDK + demo-agent): README, LICENSE, Contributing~~ ✅
+6. ~~Запустить Twitter/X~~ ✅ + Discord (в процессе)
+7. Пост на Hacker News (Show HN) — ждёт кармы
+8. dev.to + Reddit публикации ✅
+9. **Цель: 50 первых пользователей, 100 платежей**
 
 ### Месяц 2: Growth и фидбек
 1. Добавить 3-5 новых ресурсов в каталог
@@ -121,12 +121,12 @@
 ## 4. Каналы рекламы
 
 ### Приоритет 1 (сразу)
-- **GitHub**: open-source SDK, README с примерами, badges (build, npm version)
-- **Twitter/X**: @netthouse, треды про x402/AI agents, демо-видео «агент платит за 3 секунды»
+- **GitHub**: open-source SDK, README с примерами, badges (build, npm version) ✅
+- **Twitter/X**: @netthouse, треды про x402/AI agents, демо-видео «агент платит за 3 секунды» ✅
 - **Discord**: сервер для разработчиков (#general, #dev-help, #showcase, #announcements)
 
 ### Приоритет 2 (после 100 пользователей)
-- Reddit: r/CryptoCurrency, r/ethereum, r/Base
+- Reddit: r/CryptoCurrency, r/ethereum, r/Base ✅ (r/Base + r/ethdev опубликовано)
 - Base official Discord — featured project
 - Product Hunt (launch day)
 - Hacker News (Show HN)
@@ -189,7 +189,7 @@
 
 ## 6. Оценка готовности проекта
 
-**Вердикт: MVP-ready, production запущен.**
+**Вердикт: MVP-ready, production запущен, маркетинг стартовал.**
 
 Можно запускать и привлекать первых пользователей прямо сейчас.
 
@@ -212,4 +212,5 @@
 
 ---
 
-*Документ обновлён: 06.11.2026. Обновлять по мере закрытия задач.*
+*Документ обновлён: 07.11.2026. Обновлять по мере закрытия задач.*
+'@"
