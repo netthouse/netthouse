@@ -125,7 +125,8 @@ export default async function billingRoutes(fastify: FastifyInstance) {
     switch (event.type) {
       case "invoice.paid": {
         const invoice = event.data.object as Stripe.Invoice;
-        const subscriptionId = invoice.subscription as string;
+        const subRef = invoice.parent?.subscription_details?.subscription;
+        const subscriptionId = typeof subRef === "string" ? subRef : subRef?.id;
 
         if (subscriptionId) {
           const subscription = await stripe.subscriptions.retrieve(subscriptionId);
