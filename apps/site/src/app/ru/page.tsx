@@ -1,8 +1,11 @@
-﻿export const metadata = {
+﻿export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+export const metadata = {
   title: "Netthouse — платёжная инфраструктура для AI-агентов",
   description: "Двойная запись, x402 HTTP-платежи и автоматический клиринг для автономных агентов.",
 };
-export const revalidate = 0;
+
 export default function HomePageRU() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
@@ -15,7 +18,7 @@ export default function HomePageRU() {
             <a href="#how" className="text-slate-600 hover:text-slate-900">Как работает</a>
             <a href="#features" className="text-slate-600 hover:text-slate-900">Возможности</a>
             <a href="#use-cases" className="text-slate-600 hover:text-slate-900">Применение</a>
-            <a href="/docs" className="text-slate-600 hover:text-slate-900">Документация</a>
+            <a href="/ru/docs" className="text-slate-600 hover:text-slate-900">Документация</a>
             <a href="#pricing" className="text-slate-600 hover:text-slate-900">Тарифы</a>
           </nav>
           <div className="flex items-center gap-3">
@@ -55,7 +58,7 @@ export default function HomePageRU() {
               Открыть дашборд →
             </a>
             <a
-              href="/docs"
+              href="/ru/docs"
               className="px-6 py-3 bg-white border border-slate-300 rounded-lg font-medium hover:bg-slate-50"
             >
               Читать документацию
@@ -149,33 +152,26 @@ export default function HomePageRU() {
             <p className="text-center text-slate-600 max-w-2xl mx-auto mb-16">
               Бесплатно пока вы разрабатываете. Платите когда масштабируетесь.
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
               <Price
-                name="Hobby"
+                name="Free"
                 price="Бесплатно"
                 desc="Для экспериментов и пет-проектов"
-                features={["1 организация", "10k транзакций/месяц", "Поддержка сообщества"]}
+                features={["1 организация", "10k транзакций/месяц", "Комиссия 10% с x402-платежа", "Поддержка сообщества"]}
                 highlight={false}
               />
               <Price
                 name="Pro"
                 price="$29"
                 desc="В месяц, за организацию"
-                features={["Неограниченно организаций", "1M транзакций/месяц", "Приоритетная поддержка", "Свои домены"]}
-                highlight={false}
-              />
-              <Price
-                name="Startup"
-                price="$99"
-                desc="Для команд, запускающих продукты с агентами"
-                features={["Всё из Pro", "10M транзакций/месяц", "Журналы аудита", "Поддержка в Slack"]}
+                features={["Неограниченно организаций", "1M транзакций/месяц", "Комиссия 5% с x402-платежа", "Приоритетная поддержка"]}
                 highlight={true}
               />
               <Price
                 name="Enterprise"
-                price="По запросу"
-                desc="Для регулируемых нагрузок"
-                features={["SLA и on-prem", "SSO / SAML", "Выделенный CSM", "Пользовательские правила клиринга"]}
+                price="$299"
+                desc="В месяц, для регулируемых нагрузок"
+                features={["Всё из Pro", "10M транзакций/месяц", "Комиссия 2% с x402-платежа", "SLA, SSO / SAML, выделенный CSM"]}
                 highlight={false}
               />
             </div>
