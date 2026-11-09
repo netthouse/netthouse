@@ -7,3 +7,20 @@ coverage/
 .env.local
 .env.production
 *.log
+# Local and production backups
+backups/
+*.dump
+*.backup
+*.sql.gz
+
+# Environment files
+.env.*
+!.env.example
+
+# Local credentials and private keys
+.secrets/
+*.pem
+*.key
+
+# Local database exports
+db-backup-*.sql
