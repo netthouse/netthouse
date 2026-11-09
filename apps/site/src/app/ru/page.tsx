@@ -15,7 +15,7 @@ export default function HomePageRU() {
             <a href="#how" className="text-slate-600 hover:text-slate-900">Как работает</a>
             <a href="#features" className="text-slate-600 hover:text-slate-900">Возможности</a>
             <a href="#use-cases" className="text-slate-600 hover:text-slate-900">Применение</a>
-            <a href="/docs" className="text-slate-600 hover:text-slate-900">Документация</a>
+            <a href="/ru/ru/docs" className="text-slate-600 hover:text-slate-900">Документация</a>
             <a href="#pricing" className="text-slate-600 hover:text-slate-900">Тарифы</a>
           </nav>
           <div className="flex items-center gap-3">
@@ -55,7 +55,7 @@ export default function HomePageRU() {
               Открыть дашборд →
             </a>
             <a
-              href="/docs"
+              href="/ru/ru/docs"
               className="px-6 py-3 bg-white border border-slate-300 rounded-lg font-medium hover:bg-slate-50"
             >
               Читать документацию
