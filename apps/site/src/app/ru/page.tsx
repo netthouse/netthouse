@@ -2,7 +2,7 @@
   title: "Netthouse — платёжная инфраструктура для AI-агентов",
   description: "Двойная запись, x402 HTTP-платежи и автоматический клиринг для автономных агентов.",
 };
-
+export const revalidate = 0;
 export default function HomePageRU() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">

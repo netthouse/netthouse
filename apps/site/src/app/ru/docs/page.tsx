@@ -19,7 +19,7 @@ export const metadata = {
   title: "Netthouse — Документация",
   description: "Руководство по интеграции x402-платежей для AI-агентов. TypeScript, Python, curl.",
 };
-
+export const revalidate = 0;
 export default function DocsPageRU() {
   return (
     <div className="min-h-screen">
