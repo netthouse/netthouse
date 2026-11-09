@@ -149,33 +149,26 @@ export default function HomePageRU() {
             <p className="text-center text-slate-600 max-w-2xl mx-auto mb-16">
               Бесплатно пока вы разрабатываете. Платите когда масштабируетесь.
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-              <Price
-                name="Hobby"
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+               <Price
+                name="Free"
                 price="Бесплатно"
                 desc="Для экспериментов и пет-проектов"
-                features={["1 организация", "10k транзакций/месяц", "Поддержка сообщества"]}
+                features={["1 организация", "10k транзакций/месяц", "Комиссия 10% с x402-платежа", "Поддержка сообщества"]}
                 highlight={false}
               />
               <Price
                 name="Pro"
                 price="$29"
                 desc="В месяц, за организацию"
-                features={["Неограниченно организаций", "1M транзакций/месяц", "Приоритетная поддержка", "Свои домены"]}
-                highlight={false}
-              />
-              <Price
-                name="Startup"
-                price="$99"
-                desc="Для команд, запускающих продукты с агентами"
-                features={["Всё из Pro", "10M транзакций/месяц", "Журналы аудита", "Поддержка в Slack"]}
+                features={["Неограниченно организаций", "1M транзакций/месяц", "Комиссия 5% с x402-платежа", "Приоритетная поддержка"]}
                 highlight={true}
               />
               <Price
                 name="Enterprise"
-                price="По запросу"
-                desc="Для регулируемых нагрузок"
-                features={["SLA и on-prem", "SSO / SAML", "Выделенный CSM", "Пользовательские правила клиринга"]}
+                price="$299"
+                desc="В месяц, для регулируемых нагрузок"
+                features={["Всё из Pro", "10M транзакций/месяц", "Комиссия 2% с x402-платежа", "SLA, SSO / SAML, выделенный CSM"]}
                 highlight={false}
               />
             </div>

@@ -152,36 +152,29 @@ export default function HomePage() {
             <p className="text-center text-slate-600 max-w-2xl mx-auto mb-16">
               Free while you build. Pay when you scale.
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
               <Price
-                name="Hobby"
+                name="Free"
                 price="Free"
                 desc="For experiments and side projects"
-                features={["1 organization", "10k transactions/month", "Community support"]}
+                features={["1 organization", "10k transactions/month", "10% commission per x402 payment", "Community support"]}
                 highlight={false}
               />
               <Price
                 name="Pro"
                 price="$29"
                 desc="Per month, per organization"
-                features={["Unlimited orgs", "1M transactions/month", "Priority support", "Custom domains"]}
-                highlight={false}
-              />
-              <Price
-                name="Startup"
-                price="$99"
-                desc="For teams shipping agent products"
-                features={["Everything in Pro", "10M transactions/month", "Audit logs", "Slack support"]}
+                features={["Unlimited orgs", "1M transactions/month", "5% commission per x402 payment", "Priority support"]}
                 highlight={true}
               />
               <Price
                 name="Enterprise"
-                price="Custom"
-                desc="For regulated workloads"
-                features={["SLA & on-prem", "SSO / SAML", "Dedicated CSM", "Custom clearing rules"]}
+                price="$299"
+                desc="Per month, for regulated workloads"
+                features={["Everything in Pro", "10M transactions/month", "2% commission per x402 payment", "SLA, SSO / SAML, dedicated CSM"]}
                 highlight={false}
               />
-            </div>
+                 </div>
           </div>
         </section>
 
