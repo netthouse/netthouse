@@ -1,4 +1,5 @@
 import { SignIn } from "@clerk/nextjs";
+import type { SignInProps } from "@clerk/nextjs";
 import { cookies, headers } from "next/headers";
 import { ruRU } from "@clerk/localizations";
 import { netthouseAppearance } from "@/lib/clerk-theme";
@@ -15,7 +16,7 @@ export default async function SignInPage() {
     <div className="min-h-screen flex items-center justify-center bg-slate-50">
       <SignIn
         path="/sign-in"
-        appearance={netthouseAppearance}
+        appearance={netthouseAppearance as SignInProps["appearance"]}
         localization={locale === "ru" ? ruRU : undefined}
       />
     </div>
