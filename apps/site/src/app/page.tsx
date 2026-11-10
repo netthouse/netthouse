@@ -205,9 +205,28 @@ export default function HomePage() {
                 Payments infrastructure for AI agents.
               </p>
             </div>
-            <FooterCol title="Product" links={["Features", "Pricing", "Docs", "Changelog"]} />
-            <FooterCol title="Company" links={["About", "Blog", "Contact"]} />
-            <FooterCol title="Legal" links={["Privacy", "Terms", "Security"]} />
+            <FooterCol
+  title="Product"
+  links={[
+    { label: "Features", href: "/#features" },
+    { label: "Pricing", href: "/#pricing" },
+    { label: "Docs", href: "/docs" },
+  ]}
+/>
+<FooterCol
+  title="Resources"
+  links={[
+    { label: "GitHub", href: "https://github.com/netthouse" },
+    { label: "Dashboard", href: "https://app.netthouse.com" },
+  ]}
+/>
+<FooterCol
+  title="API"
+  links={[
+    { label: "API health", href: "https://api.netthouse.com/health" },
+  ]}
+/>
+
           </div>
           <div className="mt-12 pt-6 border-t border-slate-200 text-center text-sm text-slate-500">
             © 2026 Netthouse. Built with ❤️ for the agent economy.
@@ -290,18 +309,33 @@ function Price({
   );
 }
 
-function FooterCol({ title, links }: { title: string; links: string[] }) {
+function FooterCol({
+  title,
+  links,
+}: {
+  title: string;
+  links: { label: string; href: string }[];
+}) {
   return (
     <div>
       <h4 className="font-semibold text-sm mb-3">{title}</h4>
       <ul className="space-y-2">
-        {links.map((l) => (
-          <li key={l}>
-            <a href="#" className="text-sm text-slate-500 hover:text-slate-900">
-              {l}
-            </a>
-          </li>
-        ))}
+        {links.map((link) => {
+          const isExternal = link.href.startsWith("http" );
+
+          return (
+            <li key={link.href}>
+              <a
+                href={link.href}
+                target={isExternal ? "_blank" : undefined}
+                rel={isExternal ? "noreferrer" : undefined}
+                className="text-sm text-slate-500 hover:text-slate-900"
+              >
+                {link.label}
+              </a>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

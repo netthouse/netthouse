@@ -203,9 +203,28 @@ export default function HomePageRU() {
                 Платёжная инфраструктура для AI-агентов.
               </p>
             </div>
-            <FooterCol title="Продукт" links={["Возможности", "Тарифы", "Документация", "История изменений"]} />
-            <FooterCol title="Компания" links={["О нас", "Блог", "Контакты"]} />
-            <FooterCol title="Юридическое" links={["Конфиденциальность", "Условия", "Безопасность"]} />
+           <FooterCol
+  title="Продукт"
+  links={[
+    { label: "Возможности", href: "/ru#features" },
+    { label: "Тарифы", href: "/ru#pricing" },
+    { label: "Документация", href: "/ru/docs" },
+  ]}
+/>
+<FooterCol
+  title="Ресурсы"
+  links={[
+    { label: "GitHub", href: "https://github.com/netthouse" },
+    { label: "Дашборд", href: "https://app.netthouse.com" },
+  ]}
+/>
+<FooterCol
+  title="API"
+  links={[
+    { label: "Состояние API", href: "https://api.netthouse.com/health" },
+  ]}
+/>
+
           </div>
           <div className="mt-12 pt-6 border-t border-slate-200 text-center text-sm text-slate-500">
             © 2026 Netthouse. Сделано с ❤️ для экономики агентов.
@@ -288,18 +307,33 @@ function Price({
   );
 }
 
-function FooterCol({ title, links }: { title: string; links: string[] }) {
+function FooterCol({
+  title,
+  links,
+}: {
+  title: string;
+  links: { label: string; href: string }[];
+}) {
   return (
     <div>
       <h4 className="font-semibold text-sm mb-3">{title}</h4>
       <ul className="space-y-2">
-        {links.map((l) => (
-          <li key={l}>
-            <a href="#" className="text-sm text-slate-500 hover:text-slate-900">
-              {l}
-            </a>
-          </li>
-        ))}
+        {links.map((link) => {
+          const isExternal = link.href.startsWith("http" );
+
+          return (
+            <li key={link.href}>
+              <a
+                href={link.href}
+                target={isExternal ? "_blank" : undefined}
+                rel={isExternal ? "noreferrer" : undefined}
+                className="text-sm text-slate-500 hover:text-slate-900"
+              >
+                {link.label}
+              </a>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
