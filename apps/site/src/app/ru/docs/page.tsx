@@ -138,8 +138,12 @@ const client = createX402Client({
 // 1. Узнаём что доступно
 const catalog = await client.discover(API_URL);
 console.log("Найдено ресурсов:", catalog.length);
-// → Найдено ресурсов: 1
+// → Найдено ресурсов: 4
 // → • /premium/data — 0.10 USDC в сети base
+// → • /market-data — 0.05 USDC в сети base
+// → • /agent-news — 0.10 USDC в сети base
+// → • /fx-rates — 0.25 USDC в сети base
+
 
 // 2. Выбираем ресурс (первый с USDC в Base)
 const target = catalog.find(i =>
@@ -334,6 +338,9 @@ HTTP/1.1 200 OK
                 <tbody className="divide-y divide-slate-200">
                   <Row m="GET" p="/discover" d="Список платных ресурсов с ценами" a="Public" />
                   <Row m="GET" p="/premium/data" d="Премиум данные (0.10 USDC)" a="x402" />
+                  <Row m="GET" p="/market-data" d="Криптовалютный снимок рынка (0.05 USDC)" a="x402" />
+                  <Row m="GET" p="/agent-news" d="Новости экосистемы AI-агентов (0.10 USDC)" a="x402" />
+                  <Row m="GET" p="/fx-rates" d="Курсы валют в реальном времени (0.25 USDC)" a="x402" />
                   <Row m="GET" p="/payments" d="Список x402-платежей" a="Admin" />
                   <Row m="GET" p="/health" d="Проверка здоровья API" a="Public" />
                   <Row m="POST" p="/organizations" d="Создать организацию" a="API key" />
@@ -361,7 +368,8 @@ HTTP/1.1 200 OK
             </p>
             <Code>{`curl ${API}/discover | jq`}</Code>
             <p className="mt-4 text-slate-600">
-              Или попробуйте сами: заплатите 0.10 USDC за премиум данные и увидьте транзакцию на <a href="https://basescan.org" className="text-blue-600 hover:underline" target="_blank">basescan.org</a>.
+              Изучите каталог и оплачивайте API-вызовы стоимостью от 0.05 до 0.25 USDC. Транзакцию можно посмотреть на
+ <a href="https://basescan.org" className="text-blue-600 hover:underline" target="_blank">basescan.org</a>.
             </p>
 
             <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -375,7 +383,8 @@ HTTP/1.1 200 OK
               </div>
               <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg">
                 <h4 className="font-semibold text-sm mb-2">Пример цены</h4>
-                <p className="text-sm text-slate-600">0.10 USDC за API-вызов</p>
+                <p className="text-sm text-slate-600">0.05–0.25 USDC за API-вызов</p>
+
               </div>
               <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg">
                 <h4 className="font-semibold text-sm mb-2">Расчёт</h4>

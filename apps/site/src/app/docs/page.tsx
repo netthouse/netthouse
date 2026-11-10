@@ -129,8 +129,12 @@ const client = createX402Client({
 // 1. Discover what's available
 const catalog = await client.discover(API_URL);
 console.log("Found resources:", catalog.length);
-// → Found resources: 1
+// → Found resources: 4
 // → • /premium/data — 0.10 USDC on base
+// → • /market-data — 0.05 USDC on base
+// → • /agent-news — 0.10 USDC on base
+// → • /fx-rates — 0.25 USDC on base
+
 
 // 2. Select a resource (first one with USDC on Base)
 const target = catalog.find(i =>
@@ -325,6 +329,9 @@ HTTP/1.1 200 OK
                 <tbody className="divide-y divide-slate-200">
                   <Row m="GET" p="/discover" d="List paid resources with prices" a="Public" />
                   <Row m="GET" p="/premium/data" d="Premium data (0.10 USDC)" a="x402" />
+                  <Row m="GET" p="/market-data" d="Crypto market snapshot (0.05 USDC)" a="x402" />
+                  <Row m="GET" p="/agent-news" d="AI agent ecosystem news (0.10 USDC)" a="x402" />
+                  <Row m="GET" p="/fx-rates" d="Real-time FX rates (0.25 USDC)" a="x402" />
                   <Row m="GET" p="/payments" d="List x402 payments" a="Admin" />
                   <Row m="GET" p="/health" d="API health check" a="Public" />
                   <Row m="POST" p="/organizations" d="Create organization" a="API key" />
@@ -352,7 +359,8 @@ HTTP/1.1 200 OK
             </p>
             <Code>{`curl ${API}/discover | jq`}</Code>
             <p className="mt-4 text-slate-600">
-              Or try it yourself: pay 0.10 USDC for premium data and see the transaction on <a href="https://basescan.org" className="text-blue-600 hover:underline" target="_blank">basescan.org</a>.
+              Explore the catalog and pay 0.05–0.25 USDC per API call. See the transaction on
+                <a href="https://basescan.org" className="text-blue-600 hover:underline" target="_blank">basescan.org</a>.
             </p>
 
             <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -366,7 +374,8 @@ HTTP/1.1 200 OK
               </div>
               <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg">
                 <h4 className="font-semibold text-sm mb-2">Example price</h4>
-                <p className="text-sm text-slate-600">0.10 USDC per API call</p>
+                <p className="text-sm text-slate-600">0.05–0.25 USDC per API call</p>
+
               </div>
               <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg">
                 <h4 className="font-semibold text-sm mb-2">Settlement</h4>
