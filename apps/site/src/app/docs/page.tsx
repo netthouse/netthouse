@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-const API = "https://netthouse-api.onrender.com";
+const API = "https://api.netthouse.com";
 
 function Code({ children, lang = "bash" }: { children: string; lang?: string }) {
   return (
@@ -121,7 +121,7 @@ if (result.response.ok) {
 
             <Code lang="typescript">{`import { createX402Client } from "@netthouse/sdk";
 
-const API_URL = "https://netthouse-api.onrender.com";
+const API_URL = "https://api.netthouse.com";
 const client = createX402Client({
   privateKey: process.env.BUYER_PRIVATE_KEY as \`0x\${string}\`,
 });
@@ -170,7 +170,7 @@ from web3 import Web3
 from eth_account import Account
 
 # Setup
-API_URL = "https://netthouse-api.onrender.com"
+API_URL = "https://api.netthouse.com"
 PRIVATE_KEY = "0x..."  # Your buyer wallet
 w3 = Web3(Web3.HTTPProvider("https://sepolia.base.org"))
 account = Account.from_key(PRIVATE_KEY)

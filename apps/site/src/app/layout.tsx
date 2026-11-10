@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://netthouse.com" ),
   title: "Netthouse — AI Agent Payments Platform",
   description:
     "Clearing and cost-attribution layer for AI agents. Ledger, x402, multi-currency, scoped API keys.",
