@@ -1,4 +1,15 @@
-import { pgTable, uuid, varchar, numeric, timestamp, index, jsonb, boolean } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  uuid,
+  varchar,
+  numeric,
+  timestamp,
+  index,
+  jsonb,
+  boolean,
+  unique,
+} from "drizzle-orm/pg-core";
+
 
 export const organizations = pgTable("organizations", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -8,9 +19,10 @@ export const organizations = pgTable("organizations", {
   isSuspended: boolean("is_suspended").default(false),
   suspendedAt: timestamp("suspended_at", { withTimezone: true }),
   suspensionReason: varchar("suspension_reason", { length: 500 }),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
+
 
 export const agents = pgTable(
   "agents",
@@ -108,4 +120,6 @@ export const subscriptions = pgTable("subscriptions", {
   currentPeriodEnd: timestamp("current_period_end", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
-});
+}, (t) => [
+  unique("subscriptions_org_id_unique").on(t.orgId),
+]);
