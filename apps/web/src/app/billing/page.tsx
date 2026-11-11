@@ -1,6 +1,8 @@
 import { cookies } from "next/headers";
 import { auth } from "@clerk/nextjs/server";
 import { getDictionary } from "@/i18n/dictionaries";
+import { getCurrentOrg } from "@/lib/org";
+
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
@@ -21,9 +23,21 @@ export default async function BillingPage() {
     return <div className="p-8 text-slate-500">{t.common.notSignedIn}</div>;
   }
 
-  const orgId = "95f60a9c-6f41-48b2-87fe-b13f9ee61871";
+    const currentOrg = await getCurrentOrg();
 
-  const res = await fetch(`${API_URL}/billing/${orgId}`, { cache: "no-store" });
+  if (!currentOrg) {
+    return <div className="p-8 text-slate-500">No organization selected</div>;
+  }
+
+  const orgId = currentOrg.id;
+
+  const res = await fetch(`${API_URL}/billing/${orgId}`, {
+    cache: "no-store",
+    headers: {
+      "X-User-Id": userId,
+    },
+  });
+
   const billing: BillingData = res.ok
     ? await res.json()
     : { tier: "free", commissionPercent: 10, status: "active" };

@@ -2,6 +2,8 @@ import { FastifyInstance } from "fastify";
 import Stripe from "stripe";
 import { eq } from "drizzle-orm";
 import { db, subscriptions, organizations } from "@netthouse/db";
+import { requireOwnOrg } from "../lib/auth.js";
+
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     apiVersion: "2026-10-28.endive",
@@ -16,8 +18,10 @@ const TIERS = {
 
 export default async function billingRoutes(fastify: FastifyInstance) {
   // Получить текущую подписку org
-  fastify.get("/billing/:orgId", async (request, reply) => {
+ fastify.get("/billing/:orgId", async (request, reply) => {
     const { orgId } = request.params as { orgId: string };
+
+    await requireOwnOrg(request, orgId);
 
     const sub = await db
       .select()
@@ -46,7 +50,7 @@ export default async function billingRoutes(fastify: FastifyInstance) {
     if (!TIERS[tier as keyof typeof TIERS]) {
       return reply.status(400).send({ error: "Invalid tier" });
     }
-
+      await requireOwnOrg(request, orgId);
     const org = await db
       .select()
       .from(organizations)
