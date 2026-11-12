@@ -10,13 +10,18 @@ export type Organization = {
 };
 
 export async function getOrgsForUser(): Promise<Organization[]> {
-  const { userId } = await auth();
-  if (!userId) return [];
-  
-  const data = await apiFetch<{ organizations: Organization[] }>(
-    userId,
-    "/organizations"
-  );
+  const { userId, getToken } = await auth();
+if (!userId) return [];
+
+const token = await getToken();
+
+const data = await apiFetch<{ organizations: Organization[] }>(
+  userId,
+  "/organizations",
+  {},
+  token
+);
+
   return data.organizations;
 }
 

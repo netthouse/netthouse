@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
 export async function POST(req: Request) {
-  const { userId } = await auth();
+  const { userId, getToken } = await auth();
 
   if (!userId) {
     return NextResponse.json(
@@ -23,13 +23,16 @@ export async function POST(req: Request) {
       { status: 400 }
     );
   }
+  const token = await getToken();
 
   const res = await fetch(`${API_URL}/billing/checkout`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
-      "X-User-Id": userId,
-    },
+  "Content-Type": "application/json",
+  "X-User-Id": userId,
+  ...(token ? { Authorization: `Bearer ${token}` } : {}),
+},
+
     body: JSON.stringify({ orgId, tier }),
   });
 

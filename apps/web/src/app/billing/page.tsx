@@ -14,7 +14,7 @@ type BillingData = {
 };
 
 export default async function BillingPage() {
-  const { userId } = await auth();
+  const { userId, getToken } = await auth();
   const cookieStore = await cookies();
   const locale = cookieStore.get("locale")?.value ?? "en";
   const t = getDictionary(locale);
@@ -30,12 +30,15 @@ export default async function BillingPage() {
   }
 
   const orgId = currentOrg.id;
+  const token = await getToken();
 
   const res = await fetch(`${API_URL}/billing/${orgId}`, {
     cache: "no-store",
-    headers: {
-      "X-User-Id": userId,
-    },
+   headers: {
+  "X-User-Id": userId,
+  ...(token ? { Authorization: `Bearer ${token}` } : {}),
+},
+
   });
 
   const billing: BillingData = res.ok
