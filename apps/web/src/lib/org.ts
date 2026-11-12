@@ -25,11 +25,13 @@ const data = await apiFetch<{ organizations: Organization[] }>(
   return data.organizations;
 }
 
-export async function getCurrentOrg(): Promise<Organization | null> {
+export async function getCurrentOrg(
+  existingOrgs?: Organization[]
+): Promise<Organization | null> {
   const cookieStore = await cookies();
   const currentOrgId = cookieStore.get("current_org_id")?.value;
-  const orgs = await getOrgsForUser();
-  
+  const orgs = existingOrgs ?? (await getOrgsForUser());
+
   if (orgs.length === 0) return null;
   
   // если есть cookie и org существует — возвращаем её

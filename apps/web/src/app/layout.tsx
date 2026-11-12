@@ -21,7 +21,8 @@ export default async function RootLayout({
   const cookieStore = await cookies();
   const locale = cookieStore.get("locale")?.value ?? "en";
   const orgs = await getOrgsForUser();
-  const currentOrg = await getCurrentOrg();
+  const currentOrg = await getCurrentOrg(orgs);
+
 
   return (
     <ClerkProvider
