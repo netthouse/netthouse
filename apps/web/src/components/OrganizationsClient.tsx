@@ -13,7 +13,7 @@ type Organization = {
 };
 
 export default function OrganizationsClient({ locale }: { locale: Locale }) {
-  const { userId } = useAuth();
+  const { userId, getToken } = useAuth();
   const [orgs, setOrgs] = useState<Organization[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -23,13 +23,17 @@ export default function OrganizationsClient({ locale }: { locale: Locale }) {
   const t = getDictionary(locale);
 
   const load = async () => {
-    if (!userId) return;
-    setLoading(true);
-    try {
-      const data = await apiFetch<{ organizations: Organization[] }>(
-        userId,
-        "/organizations"
-      );
+  if (!userId) return;
+  setLoading(true);
+  try {
+    const token = await getToken();
+    const data = await apiFetch<{ organizations: Organization[] }>(
+      userId,
+      "/organizations",
+      {},
+      token
+    );
+
       setOrgs(data.organizations);
       setError(null);
     } catch (err) {
@@ -43,13 +47,15 @@ export default function OrganizationsClient({ locale }: { locale: Locale }) {
     if (userId) load();
   }, [userId]);
 
-  const handleCreate = async () => {
+    const handleCreate = async () => {
     if (!userId || !newName || !newSlug) return;
     try {
+      const token = await getToken();
       await apiFetch(userId, "/organizations", {
         method: "POST",
         body: JSON.stringify({ name: newName, slug: newSlug }),
-      });
+      }, token);
+
       setNewName("");
       setNewSlug("");
       setShowCreate(false);
