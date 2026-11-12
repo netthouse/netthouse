@@ -181,6 +181,9 @@ importers:
 
   apps/api:
     dependencies:
+      '@clerk/backend':
+        specifier: ^3.27.0
+        version: 3.27.0(react@18.3.1)
       '@fastify/cors':
         specifier: ^10.0.0
         version: 10.1.0
@@ -399,6 +402,10 @@ packages:
 
   '@clerk/backend@3.23.2':
     resolution: {integrity: sha512-QW2qJPY7xQyn5SrNWJ+xO7o6va60X9/v4nX8y5zq8OJFS10X7GlEz8s5PDKTgo6W6SWb8L3APhrZH+LTp7yuNw==}
+    engines: {node: '>=20.9.0'}
+
+  '@clerk/backend@3.27.0':
+    resolution: {integrity: sha512-pmhVVP9EsAOL1rlRU4xR0XSL1BJczxGAJIqv8c+C9fRz7TYzCndGUMSSE/Zg7i2QOA24ExJbEJUiOjILdUL2EQ==}
     engines: {node: '>=20.9.0'}
 
   '@clerk/localizations@4.24.6':
@@ -4509,6 +4516,14 @@ snapshots:
       - react
       - react-dom
 
+  '@clerk/backend@3.27.0(react@18.3.1)':
+    dependencies:
+      '@clerk/shared': 4.44.1(react@18.3.1)
+      standardwebhooks: 1.1.1
+    transitivePeerDependencies:
+      - react
+      - react-dom
+
   '@clerk/localizations@4.24.6(react-dom@19.3.0(react@19.3.0))(react@19.3.0)':
     dependencies:
       '@clerk/shared': 4.44.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -4553,6 +4568,15 @@ snapshots:
     optionalDependencies:
       react: 19.3.0
       react-dom: 19.3.0(react@19.3.0)
+
+  '@clerk/shared@4.44.1(react@18.3.1)':
+    dependencies:
+      '@tanstack/query-core': 5.104.3
+      dequal: 2.0.3
+      glob-to-regexp: 0.4.1
+      js-cookie: 3.0.8
+    optionalDependencies:
+      react: 18.3.1
 
   '@coinbase/cdp-sdk@1.58.0(bufferutil@4.1.0)(debug@4.4.3)(typescript@5.9.3)(utf-8-validate@5.0.10)':
     dependencies:
