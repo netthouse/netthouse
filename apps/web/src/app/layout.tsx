@@ -24,7 +24,9 @@ export default async function RootLayout({
   const currentOrg = await getCurrentOrg();
 
   return (
-    <ClerkProvider>
+    <ClerkProvider
+  allowedRedirectOrigins={["https://app.netthouse.com"]}
+>
       <html lang={locale}>
         <body className="bg-slate-50 text-slate-900 antialiased">
           <div className="flex">
