@@ -26,8 +26,8 @@ export default async function BillingPage() {
     const currentOrg = await getCurrentOrg();
 
   if (!currentOrg) {
-    return <div className="p-8 text-slate-500">No organization selected</div>;
-  }
+  return <div className="p-8 text-slate-500">{t.pages.billing.noOrg}</div>;
+}
 
   const orgId = currentOrg.id;
   const token = await getToken();
@@ -45,35 +45,8 @@ export default async function BillingPage() {
     ? await res.json()
     : { tier: "free", commissionPercent: 10, status: "active" };
 
-  const L = locale === "ru"
-    ? {
-        title: "Тарифы и биллинг",
-        currentPlan: "Текущий план",
-        free: "Free",
-        pro: "Pro",
-        enterprise: "Enterprise",
-        freeDesc: "Для старта",
-        proDesc: "Для растущих проектов",
-        enterpriseDesc: "Для крупного бизнеса",
-        month: "/мес",
-        commission: "Комиссия",
-        upgrade: "Оформить",
-        active: "Активен",
-      }
-    : {
-        title: "Billing & Plans",
-        currentPlan: "Current plan",
-        free: "Free",
-        pro: "Pro",
-        enterprise: "Enterprise",
-        freeDesc: "For starters",
-        proDesc: "For growing projects",
-        enterpriseDesc: "For enterprise",
-        month: "/mo",
-        commission: "Commission",
-        upgrade: "Subscribe",
-        active: "Active",
-      };
+  const L = t.pages.billing;
+
 
   const plans = [
     { id: "free", name: L.free, price: 0, commission: 10, desc: L.freeDesc },

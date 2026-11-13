@@ -129,8 +129,24 @@ const en = {
       empty: "No unpaid commissions",
       loadError: "Failed to load commission data",
     },
-  },
-};
+    billing: {
+      title: "Billing & Plans",
+      currentPlan: "Current plan",
+      free: "Free",
+      pro: "Pro",
+      enterprise: "Enterprise",
+      freeDesc: "For starters",
+      proDesc: "For growing projects",
+      enterpriseDesc: "For enterprise",
+      month: "/mo",
+      commission: "Commission",
+      upgrade: "Subscribe",
+      active: "Active",
+      noOrg: "No organization selected",
+      },
+
+    },
+  };
 
 export type Dictionary = typeof en;
 
@@ -261,6 +277,22 @@ const ru: Dictionary = {
       empty: "Нет неоплаченных комиссий",
       loadError: "Не удалось загрузить данные комиссии",
     },
+    billing: {
+      title: "Тарифы и биллинг",
+      currentPlan: "Текущий тариф",
+      free: "Free",
+      pro: "Pro",
+      enterprise: "Enterprise",
+      freeDesc: "Для старта",
+      proDesc: "Для растущих проектов",
+      enterpriseDesc: "Для крупного бизнеса",
+      month: "/мес.",
+      commission: "Комиссия",
+      upgrade: "Оформить",
+      active: "Активен",
+      noOrg: "Организация не выбрана",
+       },
+
   },
 };
 
