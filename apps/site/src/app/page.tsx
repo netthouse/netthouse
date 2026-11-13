@@ -20,7 +20,7 @@ export default function HomePage() {
               <a href="/ru" className="px-2 py-1 bg-slate-100 text-slate-600 rounded hover:bg-slate-200">RU</a>
             </div>
             <a
-              href="https://app.netthouse.com"
+              href="https://app.netthouse.com/sign-in?lang=en"
               className="px-4 py-2 bg-slate-900 text-white rounded-md text-sm font-medium hover:bg-slate-800"
             >
               Sign in

@@ -27,7 +27,7 @@ export default function HomePageRU() {
               <a href="/ru" className="px-2 py-1 bg-slate-900 text-white rounded">RU</a>
             </div>
             <a
-              href="https://app.netthouse.com"
+              href="https://app.netthouse.com/sign-in?lang=ru"
               className="px-4 py-2 bg-slate-900 text-white rounded-md text-sm font-medium hover:bg-slate-800"
             >
               Войти
