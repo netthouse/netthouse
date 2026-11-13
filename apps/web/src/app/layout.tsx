@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { ClerkProvider } from "@clerk/nextjs";
+import { ruRU } from "@clerk/localizations";
 import Sidebar from "@/components/Sidebar";
 import { getOrgsForUser, getCurrentOrg } from "@/lib/org";
 import "./globals.css";
@@ -25,9 +26,11 @@ export default async function RootLayout({
 
 
   return (
-    <ClerkProvider
+  <ClerkProvider
+  localization={locale === "ru" ? ruRU : undefined}
   allowedRedirectOrigins={["https://app.netthouse.com"]}
 >
+
       <html lang={locale}>
         <body className="bg-slate-50 text-slate-900 antialiased">
           <div className="flex">
