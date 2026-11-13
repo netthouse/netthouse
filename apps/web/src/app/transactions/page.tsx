@@ -20,7 +20,7 @@ type Transaction = {
 };
 
 export default async function TransactionsPage() {
-  const { userId } = await auth();
+  const { userId, getToken } = await auth();
   const cookieStore = await cookies();
   const locale = cookieStore.get("locale")?.value ?? "en";
   const t = getDictionary(locale);
@@ -33,11 +33,14 @@ export default async function TransactionsPage() {
   if (!currentOrg) {
     return <div className="p-8 text-slate-500">No organizations yet</div>;
   }
-
+  const token = await getToken();
   const data = await apiFetch<{ transactions: Transaction[] }>(
-    userId,
-    `/transactions?orgId=${currentOrg.id}`
-  );
+  userId,
+  `/transactions?orgId=${currentOrg.id}`,
+  {},
+  token
+);
+
   const transactions = data.transactions;
 
   return (

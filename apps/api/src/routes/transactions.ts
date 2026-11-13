@@ -10,7 +10,7 @@ import {
   accounts,
   organizations,
 } from "@netthouse/db";
-import { requireUser, requireOwnOrg } from "../lib/auth.js";
+import { requireClerkUser, requireOwnClerkOrg } from "../lib/auth.js";
 
 const transactionEntrySchema = z.object({
   accountId: z.string().uuid(),
@@ -31,7 +31,7 @@ export default async function transactionRoutes(fastify: FastifyInstance) {
     if (!parsed.success) {
       return reply.status(400).send({ error: "Validation failed", details: parsed.error.issues });
     }
-    await requireOwnOrg(request, parsed.data.orgId);
+    await requireOwnClerkOrg(request, parsed.data.orgId);
 
     try {
       const result = await postTransaction(parsed.data);
@@ -44,7 +44,7 @@ export default async function transactionRoutes(fastify: FastifyInstance) {
 
   // GET /transactions — список транзакций (только свои org)
   fastify.get("/transactions", async (request) => {
-    const userId = requireUser(request);
+    const userId = await requireClerkUser(request);
     const { orgId } = request.query as { orgId?: string };
 
     // Находим все org пользователя
@@ -102,7 +102,7 @@ export default async function transactionRoutes(fastify: FastifyInstance) {
       err.statusCode = 404;
       throw err;
     }
-    await requireOwnOrg(request, account.orgId);
+    await requireOwnClerkOrg(request, account.orgId);
     const balance = await getAccountBalance(id);
     return { accountId: id, balance };
   });

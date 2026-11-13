@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
+import { useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { apiFetch } from "@/lib/api";
 import { getDictionary, type Locale } from "@/i18n/dictionaries";
@@ -32,6 +33,7 @@ export default function TransactionForm({
   locale: Locale;
 }) {
   const t = getDictionary(locale);
+  const { getToken } = useAuth();
   const tf = t.pages.transactions;
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -42,19 +44,32 @@ export default function TransactionForm({
   const [entries, setEntries] = useState<EntryDraft[]>(emptyEntries());
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+    useEffect(() => {
     let cancelled = false;
-    apiFetch<{ accounts: Account[] }>(userId, `/accounts?orgId=${orgId}`)
-      .then((data) => {
+
+    const loadAccounts = async () => {
+      try {
+        const token = await getToken();
+        const data = await apiFetch<{ accounts: Account[] }>(
+          userId,
+          `/accounts?orgId=${orgId}`,
+          {},
+          token
+        );
+
         if (!cancelled) setAccounts(data.accounts);
-      })
-      .catch((err) => {
+      } catch (err) {
         if (!cancelled) setError((err as Error).message);
-      });
+      }
+    };
+
+    void loadAccounts();
+
     return () => {
       cancelled = true;
     };
-  }, [userId, orgId]);
+  }, [userId, orgId, getToken]);
+
 
   const updateEntry = (index: number, patch: Partial<EntryDraft>) => {
     setEntries((prev) => prev.map((e, i) => (i === index ? { ...e, ...patch } : e)));
@@ -103,12 +118,17 @@ export default function TransactionForm({
       );
       return;
     }
+        const submit = async () => {
+      const token = await getToken();
 
-    startTransition(() => {
-      apiFetch(userId, "/transactions", {
+      await apiFetch(userId, "/transactions", {
         method: "POST",
         body: JSON.stringify({ orgId, description, entries }),
-      })
+      }, token);
+    };
+
+     startTransition(() => {
+      submit()
         .then(() => {
           setDescription("");
           setEntries(emptyEntries());
@@ -118,6 +138,7 @@ export default function TransactionForm({
         .catch((err) => setError((err as Error).message));
     });
   };
+
 
   if (accounts.length < 2) {
     return (
