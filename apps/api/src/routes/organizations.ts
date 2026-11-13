@@ -3,7 +3,8 @@ import { z } from "zod";
 import { db } from "@netthouse/db";
 import { organizations } from "@netthouse/db";
 import { eq } from "drizzle-orm";
-import { requireUser } from "../lib/auth.js";
+import { requireClerkUser } from "../lib/auth.js";
+
 
 const createOrgSchema = z.object({
   name: z.string().min(1).max(200),
@@ -12,7 +13,7 @@ const createOrgSchema = z.object({
 
 export async function organizationRoutes(app: FastifyInstance) {
   app.get("/organizations", async (req) => {
-    const userId = requireUser(req);
+    const userId = await requireClerkUser(req);
     const rows = await db
       .select()
       .from(organizations)
@@ -21,7 +22,7 @@ export async function organizationRoutes(app: FastifyInstance) {
   });
 
   app.post("/organizations", async (req, reply) => {
-    const userId = requireUser(req);
+    const userId = await requireClerkUser(req);
     const parsed = createOrgSchema.safeParse(req.body);
     if (!parsed.success) {
       return reply
@@ -37,7 +38,7 @@ export async function organizationRoutes(app: FastifyInstance) {
   });
 
   app.get("/organizations/:id", async (req) => {
-    const userId = requireUser(req);
+    const userId = await requireClerkUser(req);
     const { id } = req.params as { id: string };
     const [org] = await db
       .select()
