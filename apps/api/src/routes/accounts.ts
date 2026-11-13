@@ -3,7 +3,7 @@ import { z } from "zod";
 import { db, getAccountBalance } from "@netthouse/db";
 import { accounts, organizations } from "@netthouse/db";
 import { eq, and } from "drizzle-orm";
-import { requireUser, requireOwnOrg } from "../lib/auth.js";
+import { requireClerkUser, requireOwnClerkOrg } from "../lib/auth.js";
 
 const createAccountSchema = z.object({
   orgId: z.string().uuid(),
@@ -16,7 +16,7 @@ export default async function accountRoutes(fastify: FastifyInstance) {
   
      // GET /accounts — список счетов пользователя (опционально по одной org)
   fastify.get("/accounts", async (request) => {
-    const userId = requireUser(request);
+    const userId = await requireClerkUser(request);
     const { orgId } = request.query as { orgId?: string };
 
     const attachBalance = async (rows: any[]) =>
@@ -28,7 +28,7 @@ export default async function accountRoutes(fastify: FastifyInstance) {
       );
 
     if (orgId) {
-      await requireOwnOrg(request, orgId);
+      await requireOwnClerkOrg(request, orgId);
       const rows = await db.select().from(accounts).where(eq(accounts.orgId, orgId));
       return { accounts: await attachBalance(rows) };
     }
@@ -56,8 +56,7 @@ export default async function accountRoutes(fastify: FastifyInstance) {
     const { orgId, agentId, currency, balance } = parsed.data;
 
     // проверка: org принадлежит пользователю
-    await requireOwnOrg(request, orgId);
-
+    await requireOwnClerkOrg(request, orgId);
     const [newAccount] = await db
       .insert(accounts)
       .values({ orgId, agentId, currency, balance })
@@ -76,7 +75,7 @@ export default async function accountRoutes(fastify: FastifyInstance) {
       throw err;
     }
     // проверка: org этого счёта принадлежит пользователю
-    await requireOwnOrg(request, account.orgId);
+    await requireOwnClerkOrg(request, account.orgId);
     return { account };
   });
 }

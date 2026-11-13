@@ -13,7 +13,7 @@ type Account = {
 };
 
 export default async function AccountsPage() {
-  const { userId } = await auth();
+  const { userId, getToken } = await auth();
   const cookieStore = await cookies();
   const locale = cookieStore.get("locale")?.value ?? "en";
   const t = getDictionary(locale);
@@ -26,11 +26,14 @@ const currentOrg = await getCurrentOrg();
 if (!currentOrg) {
   return <div className="p-8 text-slate-500">{t.common.noOrg}</div>;
 }
+const token = await getToken();
+ const data = await apiFetch<{ accounts: Account[] }>(
+  userId,
+  `/accounts?orgId=${currentOrg.id}`,
+  {},
+  token
+);
 
-  const data = await apiFetch<{ accounts: Account[] }>(
-    userId,
-    `/accounts?orgId=${currentOrg.id}`
-  );
   const accounts = data.accounts;
 
   return (
