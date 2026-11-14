@@ -4,7 +4,7 @@ import { getDictionary } from "@/i18n/dictionaries";
 import { getCurrentOrg } from "@/lib/org";
 import ApiKeyManager from "@/components/ApiKeyManager";
 
-const ADMIN_KEY = process.env.API_ADMIN_KEY ?? "";
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
 type ApiKeyRow = {
@@ -18,7 +18,7 @@ type ApiKeyRow = {
 };
 
 export default async function ApiKeysPage() {
-  const { userId } = await auth();
+  const { userId, getToken } = await auth();
   const cookieStore = await cookies();
   const locale = cookieStore.get("locale")?.value ?? "en";
   const t = getDictionary(locale);
@@ -32,13 +32,15 @@ export default async function ApiKeysPage() {
   let keys: ApiKeyRow[] = [];
 
   if (orgId) {
+    const token = await getToken();
+
     const res = await fetch(`${API_URL}/api-keys?orgId=${orgId}`, {
-      cache: "no-store",
-      headers: {
-        Authorization: `Bearer ${ADMIN_KEY}`,
-        "X-User-Id": userId,
-      },
-    });
+  cache: "no-store",
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+});
+
     if (res.ok) {
       const data = await res.json();
       keys = data.apiKeys;

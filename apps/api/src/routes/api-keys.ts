@@ -1,4 +1,5 @@
 import { FastifyInstance } from "fastify";
+import type { FastifyRequest } from "fastify";
 import { z } from "zod";
 import { and, eq } from "drizzle-orm";
 import {
@@ -10,7 +11,7 @@ import {
   organizations,
   type ApiKeyScope,
 } from "@netthouse/db";
-import { requireAuth } from "../middleware/auth.js";
+import { requireClerkUser } from "../lib/auth.js";
 
 const createKeySchema = z.object({
   orgId: z.string().uuid(),
@@ -30,19 +31,17 @@ async function userOwnsOrg(userId: string, orgId: string): Promise<boolean> {
 
 // Доступ к org: либо ключ принадлежит этой org, либо это admin-ключ +
 // запрос от пользователя (X-User-Id), который владеет org (путь дашборда)
-async function canAccessOrg(request: any, orgId: string): Promise<boolean> {
-  if (request.apiKey!.orgId === orgId) return true;
-  const headerUserId = request.headers["x-user-id"] as string | undefined;
-  const isAdmin = (request.apiKey!.scopes ?? []).includes("admin");
-  if (!isAdmin || !headerUserId) return false;
-  return await userOwnsOrg(headerUserId, orgId);
+async function canAccessOrg(
+  request: FastifyRequest,
+  orgId: string
+): Promise<boolean> {
+  const userId = await requireClerkUser(request);
+  return userOwnsOrg(userId, orgId);
 }
 
-export default async function apiKeyRoutes(fastify: FastifyInstance) {
-  fastify.addHook("preHandler", async (request) => {
-    await requireAuth(request, "admin");
-  });
 
+export default async function apiKeyRoutes(fastify: FastifyInstance) {
+  
   // POST /api-keys - создать ключ
   fastify.post("/api-keys", async (request, reply) => {
     const parsed = createKeySchema.safeParse(request.body);

@@ -6,7 +6,7 @@ import { auth } from "@clerk/nextjs/server";
 import { getOrgsForUser } from "@/lib/org";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
-const ADMIN_KEY = process.env.API_ADMIN_KEY ?? "";
+
 
 export async function setCurrentOrg(orgId: string) {
   const { userId } = await auth();
@@ -36,9 +36,12 @@ export async function createApiKeyAction(payload: {
   name: string;
   scopes: string[];
 }): Promise<{ key: string; name: string }> {
-  const { userId } = await auth();
-  if (!userId) throw new Error("Not authenticated");
-  if (!ADMIN_KEY) throw new Error("API_ADMIN_KEY not configured on server");
+  const { userId, getToken } = await auth();
+if (!userId) throw new Error("Not authenticated");
+
+const token = await getToken();
+if (!token) throw new Error("Clerk token unavailable");
+
 
   const owned = await getOrgsForUser();
   if (!owned.find((o) => o.id === payload.orgId)) {
@@ -48,10 +51,10 @@ export async function createApiKeyAction(payload: {
   const res = await fetch(`${API_URL}/api-keys`, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${ADMIN_KEY}`,
-      "X-User-Id": userId,
-    },
+  "Content-Type": "application/json",
+  Authorization: `Bearer ${token}`,
+},
+
     body: JSON.stringify(payload),
   });
   if (!res.ok) {
@@ -67,9 +70,12 @@ export async function revokeApiKeyAction(payload: {
   keyId: string;
   orgId: string;
 }) {
-  const { userId } = await auth();
-  if (!userId) throw new Error("Not authenticated");
-  if (!ADMIN_KEY) throw new Error("API_ADMIN_KEY not configured on server");
+  const { userId, getToken } = await auth();
+if (!userId) throw new Error("Not authenticated");
+
+const token = await getToken();
+if (!token) throw new Error("Clerk token unavailable");
+
 
   const owned = await getOrgsForUser();
   if (!owned.find((o) => o.id === payload.orgId)) {
@@ -79,9 +85,9 @@ export async function revokeApiKeyAction(payload: {
   const res = await fetch(`${API_URL}/api-keys/${payload.keyId}`, {
     method: "DELETE",
     headers: {
-      Authorization: `Bearer ${ADMIN_KEY}`,
-      "X-User-Id": userId,
-    },
+  Authorization: `Bearer ${token}`,
+},
+
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({ error: "Revoke failed" }));
