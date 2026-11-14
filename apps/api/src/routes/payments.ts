@@ -1,18 +1,17 @@
 import { FastifyInstance } from "fastify";
 import { and, eq, isNull, or, sql } from "drizzle-orm";
 import { db, x402Payments } from "@netthouse/db";
-import { requireAuth } from "../middleware/auth.js";
+import { requireOwnClerkOrg } from "../lib/auth.js";
+
 
 export default async function paymentRoutes(fastify: FastifyInstance) {
-  fastify.addHook("preHandler", async (request) => {
-    await requireAuth(request, "admin");
-  });
-
+  
   fastify.get("/payments", async (request) => {
     const { orgId } = request.query as { orgId?: string };
     if (!orgId) {
       throw { statusCode: 400, error: "Bad Request", message: "orgId required" };
     }
+    await requireOwnClerkOrg(request, orgId);
 
     const rows = await db
       .select({

@@ -3,7 +3,6 @@ import { auth } from "@clerk/nextjs/server";
 import { getDictionary } from "@/i18n/dictionaries";
 import { getCurrentOrg } from "@/lib/org";
 
-const ADMIN_KEY = process.env.API_ADMIN_KEY ?? "";
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
 type PaymentRow = {
@@ -15,7 +14,7 @@ type PaymentRow = {
 };
 
 export default async function PaymentsPage() {
-  const { userId } = await auth();
+  const { userId, getToken } = await auth();
   const cookieStore = await cookies();
   const locale = cookieStore.get("locale")?.value ?? "en";
   const t = getDictionary(locale);
@@ -29,13 +28,14 @@ export default async function PaymentsPage() {
   let payments: PaymentRow[] = [];
 
   if (orgId) {
+    const token = await getToken();
     const res = await fetch(`${API_URL}/payments?orgId=${orgId}`, {
       cache: "no-store",
       headers: {
-        Authorization: `Bearer ${ADMIN_KEY}`,
-        "X-User-Id": userId,
-      },
-    });
+       Authorization: `Bearer ${token}`,
+        },
+
+     });
     if (res.ok) {
       const data = await res.json();
       payments = data.payments;
