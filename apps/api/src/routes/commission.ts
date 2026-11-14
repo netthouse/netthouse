@@ -1,13 +1,17 @@
 import { FastifyInstance } from "fastify";
 import { and, eq, sql } from "drizzle-orm";
 import { db, x402Payments } from "@netthouse/db";
+import { requireClerkUser } from "../lib/auth.js";
 import { requireAuth } from "../middleware/auth.js";
+
 
 export default async function commissionRoutes(fastify: FastifyInstance) {
   // GET /commission/:sellerAddress — публичный, возвращает долг продавца
   fastify.get<{ Params: { sellerAddress: string } }>(
     "/commission/:sellerAddress",
     async (request) => {
+      await requireClerkUser(request);
+
       const { sellerAddress } = request.params;
 
       const rows = await db

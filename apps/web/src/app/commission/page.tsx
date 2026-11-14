@@ -24,7 +24,7 @@ type CommissionData = {
 };
 
 export default async function CommissionPage() {
-  const { userId } = await auth();
+  const { userId, getToken } = await auth();
   const cookieStore = await cookies();
   const locale = cookieStore.get("locale")?.value ?? "en";
   const t = getDictionary(locale);
@@ -36,10 +36,14 @@ export default async function CommissionPage() {
 
   // TODO: брать sellerAddress из профиля org
   const sellerAddress = "0x9CeceD626E30b60AaFDe7DFa65b6B4BD4c674a64";
-
+  const token = await getToken();
   const res = await fetch(`${API_URL}/commission/${sellerAddress}`, {
-    cache: "no-store",
-  });
+  cache: "no-store",
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+});
+
 
   let data: CommissionData | null = null;
   if (res.ok) {
