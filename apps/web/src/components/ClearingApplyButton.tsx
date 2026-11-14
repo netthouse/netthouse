@@ -1,6 +1,7 @@
 "use client";
 
 import { useTransition } from "react";
+import { useAuth } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { apiFetch } from "@/lib/api";
 import { getDictionary, type Locale } from "@/i18n/dictionaries";
@@ -17,15 +18,24 @@ export default function ClearingApplyButton({
   locale: Locale;
 }) {
   const t = getDictionary(locale);
+  const { getToken } = useAuth();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   const handleApply = () => {
     startTransition(() => {
-      apiFetch<{ created: number }>(userId, "/clearing/apply", {
-        method: "POST",
-        body: JSON.stringify({ orgId }),
-      })
+      getToken().then((token) =>
+      apiFetch<{ created: number }>(
+    userId,
+    "/clearing/apply",
+    {
+      method: "POST",
+      body: JSON.stringify({ orgId }),
+    },
+    token
+  )
+)
+
         .then((data) => {
           alert(
             locale === "ru"

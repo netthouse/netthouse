@@ -21,7 +21,7 @@ type ClearingData = {
 };
 
 export default async function ClearingPage() {
-  const { userId } = await auth();
+  const { userId, getToken } = await auth();
   const cookieStore = await cookies();
   const locale = cookieStore.get("locale")?.value ?? "en";
   const t = getDictionary(locale);
@@ -40,9 +40,12 @@ export default async function ClearingPage() {
 
   let data: ClearingData | null = null;
   if (orgId) {
+    const token = await getToken();
     const res = await fetch(`${API_URL}/clearing?orgId=${orgId}`, {
       cache: "no-store",
-      headers: { "X-User-Id": userId },
+      headers: {
+  Authorization: `Bearer ${token}`,
+},
     });
     if (res.ok) data = await res.json();
   }
