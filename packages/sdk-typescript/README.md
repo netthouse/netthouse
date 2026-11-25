@@ -23,7 +23,7 @@ const client = createX402Client({
 
 // Any paid URL. SDK pays automatically on HTTP 402.
 const { response, paid } = await client.fetch(
-  "https://netthouse-api.onrender.com/premium/data"
+  "https://api.netthouse.com/premium/data"
 );
 
 if (response.ok) {
@@ -38,7 +38,7 @@ if (response.ok) {
 Ask a server what it sells before paying:
 
 ```typescript
-const catalog = await client.discover("https://netthouse-api.onrender.com");
+const catalog = await client.discover("https://api.netthouse.com");
 
 for (const item of catalog) {
   const req = item.accepts[0];

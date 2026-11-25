@@ -1,6 +1,6 @@
 {
   "name": "@netthouse/sdk",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Netthouse x402 client SDK — pay for HTTP resources with USDC",
   "type": "module",
   "main": "./src/index.ts",
@@ -31,11 +31,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Zhasulan391/sdk-typescript.git"
+    "url": "https://github.com/netthouse/netthouse.git",
+    "directory": "packages/sdk-typescript"
   },
   "homepage": "https://netthouse.com/docs",
   "bugs": {
-    "url": "https://github.com/Zhasulan391/sdk-typescript/issues"
+    "url": "https://github.com/netthouse/netthouse/issues"
   },
   "dependencies": {
     "viem": "^2.21.26",
