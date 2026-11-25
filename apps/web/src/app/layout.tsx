@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { ClerkProvider } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { ruRU } from "@clerk/localizations";
 import Sidebar from "@/components/Sidebar";
 import { getOrgsForUser, getCurrentOrg } from "@/lib/org";
@@ -21,9 +22,9 @@ export default async function RootLayout({
 }) {
   const cookieStore = await cookies();
   const locale = cookieStore.get("locale")?.value ?? "en";
-  const orgs = await getOrgsForUser();
-  const currentOrg = await getCurrentOrg(orgs);
-
+  const { userId } = await auth();
+  const orgs = userId ? await getOrgsForUser() : [];
+  const currentOrg = userId ? await getCurrentOrg(orgs) : null;
 
   return (
   <ClerkProvider
@@ -34,11 +35,13 @@ export default async function RootLayout({
       <html lang={locale}>
         <body className="bg-slate-50 text-slate-900 antialiased">
           <div className="flex">
-            <Sidebar
-              locale={locale}
-              orgs={orgs}
-              currentOrgId={currentOrg?.id ?? null}
-            />
+            {userId && (
+              <Sidebar
+                locale={locale}
+                orgs={orgs}
+                currentOrgId={currentOrg?.id ?? null}
+              />
+            )}
             <main className="flex-1 min-h-screen">{children}</main>
           </div>
         </body>
