@@ -35,9 +35,9 @@ export default async function BillingPage() {
   const res = await fetch(`${API_URL}/billing/${orgId}`, {
     cache: "no-store",
    headers: {
-  "X-User-Id": userId,
   ...(token ? { Authorization: `Bearer ${token}` } : {}),
 },
+
 
   });
 

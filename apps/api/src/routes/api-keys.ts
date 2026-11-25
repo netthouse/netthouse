@@ -30,7 +30,6 @@ async function userOwnsOrg(userId: string, orgId: string): Promise<boolean> {
 }
 
 // Доступ к org: либо ключ принадлежит этой org, либо это admin-ключ +
-// запрос от пользователя (X-User-Id), который владеет org (путь дашборда)
 async function canAccessOrg(
   request: FastifyRequest,
   orgId: string

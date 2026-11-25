@@ -29,7 +29,6 @@ await server.register(cors, {
     "Content-Type",
     "Authorization",
     "X-Payment",
-    "X-User-Id",
   ],
   credentials: true,
 });

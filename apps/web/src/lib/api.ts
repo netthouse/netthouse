@@ -8,7 +8,6 @@ export async function apiFetch<T = unknown>(
 ): Promise<T> {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
-    "X-User-Id": userId,
   };
 
   if (token) {

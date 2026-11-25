@@ -341,24 +341,24 @@ HTTP/1.1 200 OK
                   <Row m="GET" p="/market-data" d="Криптовалютный снимок рынка (0.05 USDC)" a="x402" />
                   <Row m="GET" p="/agent-news" d="Новости экосистемы AI-агентов (0.10 USDC)" a="x402" />
                   <Row m="GET" p="/fx-rates" d="Курсы валют в реальном времени (0.25 USDC)" a="x402" />
-                  <Row m="GET" p="/payments" d="Список x402-платежей" a="Admin" />
+                  <Row m="GET" p="/payments" d="Список x402-платежей" a="Clerk JWT" />
                   <Row m="GET" p="/health" d="Проверка здоровья API" a="Public" />
-                  <Row m="POST" p="/organizations" d="Создать организацию" a="API key" />
-                  <Row m="GET" p="/organizations" d="Список организаций" a="API key" />
-                  <Row m="POST" p="/accounts" d="Создать счёт" a="API key" />
-                  <Row m="GET" p="/accounts" d="Список счетов" a="API key" />
-                  <Row m="POST" p="/transactions" d="Отправить сбалансированную транзакцию" a="API key" />
-                  <Row m="GET" p="/transactions" d="Список транзакций" a="API key" />
-                  <Row m="GET" p="/clearing" d="Предложение клиринга" a="API key" />
-                  <Row m="POST" p="/clearing/apply" d="Применить неттинг" a="API key" />
-                  <Row m="POST" p="/api-keys" d="Выпустить API-ключ" a="Admin" />
-                  <Row m="GET" p="/api-keys" d="Список API-ключей" a="Admin" />
+                  <Row m="POST" p="/organizations" d="Создать организацию" a="Clerk JWT" />
+                  <Row m="GET" p="/organizations" d="Список организаций" a="Clerk JWT" />
+                  <Row m="POST" p="/accounts" d="Создать счёт" a="Clerk JWT" />
+                  <Row m="GET" p="/accounts" d="Список счетов" a="Clerk JWT" />
+                  <Row m="POST" p="/transactions" d="Отправить сбалансированную транзакцию" a="Clerk JWT" />
+                  <Row m="GET" p="/transactions" d="Список транзакций" a="Clerk JWT" />
+                  <Row m="GET" p="/clearing" d="Предложение клиринга" a="Clerk JWT" />
+                  <Row m="POST" p="/clearing/apply" d="Применить неттинг" a="Clerk JWT" />
+                  <Row m="POST" p="/api-keys" d="Выпустить API-ключ" a="Clerk JWT" />
+                  <Row m="GET" p="/api-keys" d="Список API-ключей" a="Clerk JWT" />
                 </tbody>
               </table>
             </div>
             <p className="mt-4 text-sm text-slate-500">
-              <b>Способы авторизации:</b> <code>Public</code> (без авторизации), <code>x402</code> (заголовок X-PAYMENT), <code>API key</code> (Authorization: Bearer), <code>Admin</code> (админский API-ключ).
-            </p>
+              <b>Способы авторизации:</b> <code>Public</code> (без авторизации), <code>x402</code> (заголовок X-PAYMENT), <code>Clerk JWT</code> (Authorization: Bearer &lt;CLERK_SESSION_JWT&gt;). API-ключи выдаются в dashboard для внешних интеграций и не заменяют авторизацию dashboard через Clerk.
+              </p>
           </section>
 
           <section id="live">
@@ -426,7 +426,8 @@ function Row({ m, p, d, a }: { m: string; p: string; d: string; a: string }) {
   const authColor =
     a === "Public" ? "bg-green-100 text-green-700" :
     a === "x402" ? "bg-blue-100 text-blue-700" :
-    a === "API key" ? "bg-slate-100 text-slate-700" :
+    a === "Clerk JWT" ? "bg-purple-100 text-purple-700" :
+      a === "API key" ? "bg-slate-100 text-slate-700" :
     "bg-amber-100 text-amber-700";
 
   return (

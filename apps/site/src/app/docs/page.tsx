@@ -332,23 +332,23 @@ HTTP/1.1 200 OK
                   <Row m="GET" p="/market-data" d="Crypto market snapshot (0.05 USDC)" a="x402" />
                   <Row m="GET" p="/agent-news" d="AI agent ecosystem news (0.10 USDC)" a="x402" />
                   <Row m="GET" p="/fx-rates" d="Real-time FX rates (0.25 USDC)" a="x402" />
-                  <Row m="GET" p="/payments" d="List x402 payments" a="Admin" />
+                  <Row m="GET" p="/payments" d="List x402 payments" a="Clerk JWT" />
                   <Row m="GET" p="/health" d="API health check" a="Public" />
-                  <Row m="POST" p="/organizations" d="Create organization" a="API key" />
-                  <Row m="GET" p="/organizations" d="List organizations" a="API key" />
-                  <Row m="POST" p="/accounts" d="Create account" a="API key" />
-                  <Row m="GET" p="/accounts" d="List accounts" a="API key" />
-                  <Row m="POST" p="/transactions" d="Post balanced transaction" a="API key" />
-                  <Row m="GET" p="/transactions" d="List transactions" a="API key" />
-                  <Row m="GET" p="/clearing" d="Clearing proposal" a="API key" />
-                  <Row m="POST" p="/clearing/apply" d="Apply netting" a="API key" />
+                  <Row m="POST" p="/organizations" d="Create organization" a="Clerk JWT" />
+                  <Row m="GET" p="/organizations" d="List organizations" a="Clerk JWT" />
+                  <Row m="POST" p="/accounts" d="Create account" a="Clerk JWT" />
+                  <Row m="GET" p="/accounts" d="List accounts" a="Clerk JWT" />
+                  <Row m="POST" p="/transactions" d="Post balanced transaction" a="Clerk JWT" />
+                  <Row m="GET" p="/transactions" d="List transactions" a="Clerk JWT" />
+                  <Row m="GET" p="/clearing" d="Clearing proposal" a="Clerk JWT" />
+                  <Row m="POST" p="/clearing/apply" d="Apply netting" a="Clerk JWT" />
                   <Row m="POST" p="/api-keys" d="Issue API key" a="Admin" />
                   <Row m="GET" p="/api-keys" d="List API keys" a="Admin" />
                 </tbody>
               </table>
             </div>
             <p className="mt-4 text-sm text-slate-500">
-              <b>Auth methods:</b> <code>Public</code> (no auth), <code>x402</code> (X-PAYMENT header), <code>API key</code> (Authorization: Bearer), <code>Admin</code> (admin API key).
+              <b>Auth methods:</b> <code>Public</code> (no auth), <code>x402</code> (X-PAYMENT header), <code>Clerk JWT</code> (Authorization: Bearer &lt;CLERK_SESSION_JWT&gt;). API keys are issued in the dashboard for external integrations and are separate from dashboard authentication.
             </p>
           </section>
 
@@ -388,7 +388,7 @@ HTTP/1.1 200 OK
             <div className="p-6 bg-slate-900 text-white rounded-lg">
               <h3 className="text-xl font-bold mb-2">Ready to build?</h3>
               <p className="text-slate-300 mb-4">
-                Create an organization, issue an API key, and start accepting x402 payments from AI agents.
+                Sign in to the dashboard with Clerk, create an organization, issue an API key for an external integration, and start accepting x402 payments from AI agents.
               </p>
               <div className="flex gap-4">
                 <a
@@ -417,7 +417,8 @@ function Row({ m, p, d, a }: { m: string; p: string; d: string; a: string }) {
   const authColor =
     a === "Public" ? "bg-green-100 text-green-700" :
     a === "x402" ? "bg-blue-100 text-blue-700" :
-    a === "API key" ? "bg-slate-100 text-slate-700" :
+    a === "Clerk JWT" ? "bg-purple-100 text-purple-700" :
+      a === "API key" ? "bg-slate-100 text-slate-700" :
     "bg-amber-100 text-amber-700";
 
   return (
