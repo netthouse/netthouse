@@ -114,6 +114,8 @@ export default async function billingRoutes(fastify: FastifyInstance) {
     const paymentId = payload.payment_id == null ? null : String(payload.payment_id);
     const orderId = typeof payload.order_id === "string" ? payload.order_id : null;
     const status = typeof payload.payment_status === "string" ? payload.payment_status as PaymentStatus : null;
+    const payCurrency = typeof payload.pay_currency === "string" ? payload.pay_currency.toLowerCase() : null;
+    const priceAmount = Number(payload.price_amount);
     if (!paymentId || !orderId?.startsWith("netthouse:") || !status) {
       return reply.status(400).send({ error: "Invalid payment payload" });
     }
@@ -127,8 +129,15 @@ export default async function billingRoutes(fastify: FastifyInstance) {
       or(eq(subscriptions.providerPaymentId, paymentId), eq(subscriptions.providerOrderId, orderId))
     ).limit(1);
     if (!sub) return reply.status(404).send({ error: "Subscription payment not found" });
+    if (
+      payCurrency !== NOWPAYMENTS_CURRENCY ||
+      !Number.isFinite(priceAmount) ||
+      Math.abs(priceAmount - Number(sub.amount)) > 0.01
+    ) {
+      return reply.status(400).send({ error: "Payment currency or amount does not match the order" });
+    }
 
-    const successful = status === "finished" || status === "confirmed";
+    const successful = status === "finished";
     const terminalFailure = status === "failed" || status === "refunded" || status === "expired";
     await db.update(subscriptions).set({
       provider: "nowpayments",
