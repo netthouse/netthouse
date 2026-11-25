@@ -43,6 +43,13 @@
       "when": 1795598527607,
       "tag": "0005_add_subscription_provider_fields",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1795605315563,
+      "tag": "0006_add_subscription_payment_ids",
+      "breakpoints": true
     }
   ]
 }

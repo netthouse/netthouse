@@ -119,6 +119,8 @@ export const subscriptions = pgTable("subscriptions", {
   provider: varchar("provider", { length: 50 }),
   providerCustomerId: varchar("provider_customer_id", { length: 255 }),
   providerSubscriptionId: varchar("provider_subscription_id", { length: 255 }),
+  providerPaymentId: varchar("provider_payment_id", { length: 255 }),
+  providerOrderId: varchar("provider_order_id", { length: 255 }),
   currency: varchar("currency", { length: 10 }),
   amount: numeric("amount", { precision: 18, scale: 6 }),
   status: varchar("status", { length: 50 }).notNull().default("active"),
