@@ -7,9 +7,9 @@ export default async function HomePage() {
   const t = getDictionary(locale);
 
   return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold">{t.pages.dashboard.title}</h1>
-      <p className="mt-2 text-slate-600">{t.pages.dashboard.subtitle}</p>
+    <div className="mx-auto w-full max-w-6xl p-4 sm:p-6 lg:p-8">
+      <h1 className="text-2xl font-bold sm:text-3xl">{t.pages.dashboard.title}</h1>
+      <p className="mt-2 max-w-2xl text-sm text-slate-600 sm:text-base">{t.pages.dashboard.subtitle}</p>
     </div>
   );
 }

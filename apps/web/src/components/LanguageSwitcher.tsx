@@ -11,18 +11,22 @@ export default function LanguageSwitcher({ locale }: { locale: string }) {
   };
 
   return (
-    <div className="inline-flex rounded-md overflow-hidden border border-slate-700">
+    <div className="inline-flex overflow-hidden rounded-md border border-slate-700">
       <button
+        type="button"
         onClick={() => setLocale("en")}
-        className={`px-3 py-1 text-xs font-medium transition-colors ${
+        aria-pressed={locale === "en"}
+        className={`min-h-11 min-w-12 px-3 py-2 text-xs font-medium transition-colors ${
           locale === "en" ? "bg-slate-700 text-white" : "text-slate-300 hover:bg-slate-800"
         }`}
       >
         EN
       </button>
       <button
+        type="button"
         onClick={() => setLocale("ru")}
-        className={`px-3 py-1 text-xs font-medium transition-colors ${
+        aria-pressed={locale === "ru"}
+        className={`min-h-11 min-w-12 px-3 py-2 text-xs font-medium transition-colors ${
           locale === "ru" ? "bg-slate-700 text-white" : "text-slate-300 hover:bg-slate-800"
         }`}
       >

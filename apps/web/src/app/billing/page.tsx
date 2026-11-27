@@ -20,13 +20,13 @@ export default async function BillingPage() {
   const t = getDictionary(locale);
 
   if (!userId) {
-    return <div className="p-8 text-slate-500">{t.common.notSignedIn}</div>;
+    return <div className="p-4 text-slate-500 sm:p-8">{t.common.notSignedIn}</div>;
   }
 
     const currentOrg = await getCurrentOrg();
 
   if (!currentOrg) {
-  return <div className="p-8 text-slate-500">{t.pages.billing.noOrg}</div>;
+  return <div className="p-4 text-slate-500 sm:p-8">{t.pages.billing.noOrg}</div>;
 }
 
   const orgId = currentOrg.id;
@@ -57,20 +57,20 @@ export default async function BillingPage() {
   const planNames: Record<string, string> = { free: L.free, pro: L.pro, enterprise: L.enterprise };
 
   return (
-    <div className="p-8 max-w-6xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">{L.title}</h1>
+    <div className="mx-auto w-full max-w-6xl p-4 sm:p-6 lg:p-8">
+      <h1 className="mb-5 text-2xl font-bold sm:mb-6">{L.title}</h1>
 
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+      <div className="mb-5 rounded-lg border border-blue-200 bg-blue-50 p-4 sm:mb-6">
         <p className="text-sm">
           {L.currentPlan}: <strong>{planNames[billing.tier] ?? billing.tier}</strong> ({L.commission}: {billing.commissionPercent}%)
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-3">
         {plans.map((plan) => (
           <div
             key={plan.id}
-            className={`bg-white rounded-lg shadow p-6 border-2 ${
+            className={`min-w-0 rounded-lg border-2 bg-white p-4 shadow sm:p-6 ${
               billing.tier === plan.id ? "border-blue-500" : "border-slate-200"
             }`}
           >
@@ -85,14 +85,14 @@ export default async function BillingPage() {
             {billing.tier === plan.id ? (
               <button
                 disabled
-                className="w-full bg-slate-100 text-slate-500 px-4 py-2 rounded cursor-not-allowed"
+                className="min-h-11 w-full rounded-md bg-slate-100 px-4 py-2 text-slate-500 cursor-not-allowed"
               >
                 ✓ {L.currentPlan}
               </button>
             ) : plan.id === "free" ? (
               <button
                 disabled
-                className="w-full bg-slate-100 text-slate-500 px-4 py-2 rounded cursor-not-allowed"
+                className="min-h-11 w-full rounded-md bg-slate-100 px-4 py-2 text-slate-500 cursor-not-allowed"
               >
                 —
               </button>
@@ -102,7 +102,7 @@ export default async function BillingPage() {
                 <input type="hidden" name="tier" value={plan.id} />
                 <button
                   type="submit"
-                  className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                  className="min-h-11 w-full rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
                 >
                   {L.upgrade}
                 </button>

@@ -35,7 +35,7 @@ export default function Sidebar({
   ];
 
   return (
-    <aside className="w-64 bg-slate-900 text-white min-h-screen p-4 flex flex-col">
+    <aside className="hidden md:flex w-64 shrink-0 bg-slate-900 text-white min-h-screen p-4 flex-col">
       <div className="mb-6">
         <img src="/netthouse-horizontal-white.svg" alt="Netthouse" className="h-8 w-auto" />
         <p className="text-xs text-slate-400 mt-1">{t.tagline}</p>

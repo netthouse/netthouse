@@ -65,17 +65,17 @@ export default function OrganizationsClient({ locale }: { locale: Locale }) {
     }
   };
 
-  if (!userId) return <div className="p-8">{t.common.signingIn}</div>;
-  if (loading) return <div className="p-8">{t.common.loading}</div>;
-  if (error) return <div className="p-8 text-red-600">Error: {error}</div>;
+  if (!userId) return <div className="p-4 sm:p-8">{t.common.signingIn}</div>;
+  if (loading) return <div className="p-4 sm:p-8">{t.common.loading}</div>;
+  if (error) return <div className="break-words p-4 text-red-600 sm:p-8">Error: {error}</div>;
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-6">
+    <div className="mx-auto w-full max-w-6xl p-4 sm:p-6 lg:p-8">
+      <div className="mb-5 flex flex-col gap-3 sm:mb-6 sm:flex-row sm:items-center sm:justify-between">
         <h1 className="text-2xl font-bold">{t.pages.organizations.title}</h1>
         <button
           onClick={() => setShowCreate(!showCreate)}
-          className="px-4 py-2 bg-slate-900 text-white rounded-md hover:bg-slate-800"
+          className="min-h-11 w-full rounded-md bg-slate-900 px-4 py-2 text-white hover:bg-slate-800 sm:w-auto"
         >
           {t.pages.organizations.newOrg}
         </button>
@@ -90,25 +90,25 @@ export default function OrganizationsClient({ locale }: { locale: Locale }) {
               placeholder={t.pages.organizations.namePlaceholder}
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-md"
+              className="min-h-11 w-full rounded-md border border-slate-300 px-3 py-2"
             />
             <input
               type="text"
               placeholder={t.pages.organizations.slugPlaceholder}
               value={newSlug}
               onChange={(e) => setNewSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))}
-              className="w-full px-3 py-2 border border-slate-300 rounded-md"
+              className="min-h-11 w-full rounded-md border border-slate-300 px-3 py-2"
             />
-            <div className="flex gap-2">
+            <div className="flex flex-col gap-2 sm:flex-row">
               <button
                 onClick={handleCreate}
-                className="px-4 py-2 bg-slate-900 text-white rounded-md hover:bg-slate-800"
+                className="min-h-11 w-full rounded-md bg-slate-900 px-4 py-2 text-white hover:bg-slate-800 sm:w-auto"
               >
                 {t.common.create}
               </button>
               <button
                 onClick={() => setShowCreate(false)}
-                className="px-4 py-2 border border-slate-300 rounded-md hover:bg-slate-100"
+                className="min-h-11 w-full rounded-md border border-slate-300 px-4 py-2 hover:bg-slate-100 sm:w-auto"
               >
                 {t.common.cancel}
               </button>
@@ -118,7 +118,7 @@ export default function OrganizationsClient({ locale }: { locale: Locale }) {
       )}
 
       {orgs.length === 0 ? (
-        <div className="p-8 text-center text-slate-500 border border-dashed border-slate-300 rounded-lg">
+        <div className="rounded-lg border border-dashed border-slate-300 p-5 text-center text-sm text-slate-500 sm:p-8">
           {t.pages.organizations.empty}
         </div>
       ) : (
@@ -126,7 +126,7 @@ export default function OrganizationsClient({ locale }: { locale: Locale }) {
           {orgs.map((org) => (
             <div
               key={org.id}
-              className="p-4 border border-slate-200 rounded-lg hover:bg-slate-50"
+              className="min-w-0 rounded-lg border border-slate-200 p-4 hover:bg-slate-50"
             >
               <div className="font-semibold">{org.name}</div>
               <div className="text-sm text-slate-500">/{org.slug}</div>

@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { auth } from "@clerk/nextjs/server";
 import { getDictionary } from "@/i18n/dictionaries";
 import { getCurrentOrg } from "@/lib/org";
+import CopyButton from "@/components/CopyButton";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001";
 
@@ -20,7 +21,7 @@ export default async function PaymentsPage() {
   const t = getDictionary(locale);
 
   if (!userId) {
-    return <div className="p-8 text-slate-500">Not signed in</div>;
+    return <div className="p-4 text-slate-500 sm:p-8">Not signed in</div>;
   }
 
   const currentOrg = await getCurrentOrg();
@@ -47,10 +48,33 @@ export default async function PaymentsPage() {
   const tp = t.pages.payments;
 
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-6">{tp.title}</h1>
+    <div className="mx-auto w-full max-w-6xl p-4 sm:p-6 lg:p-8">
+      <h1 className="mb-5 text-2xl font-bold sm:mb-6">{tp.title}</h1>
       {orgId ? (
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+        <>
+        <div className="space-y-3 md:hidden">
+          {payments.length === 0 ? (
+            <div className="rounded-lg bg-white p-6 text-center text-sm text-slate-500 shadow">{tp.empty}</div>
+          ) : payments.map((p) => (
+            <article key={p.tx_hash} className="min-w-0 rounded-lg bg-white p-4 shadow">
+              <div className="flex min-w-0 items-start justify-between gap-2">
+                <div className="flex min-w-0 items-center gap-1">
+                  <a href={basescanUrl(p.tx_hash)} target="_blank" rel="noopener noreferrer" className="min-w-0 truncate font-mono text-sm text-blue-600 underline-offset-2 hover:underline" title={p.tx_hash}>
+                    {p.tx_hash.slice(0, 10)}...{p.tx_hash.slice(-8)}
+                  </a>
+                  <CopyButton value={p.tx_hash} locale={locale} className="shrink-0" />
+                </div>
+                <span className="shrink-0 font-semibold text-green-700">{formatUsdc(p.amount)} USDC</span>
+              </div>
+              <div className="mt-3 space-y-2 text-sm">
+                <div className="flex items-center justify-between gap-2"><span className="shrink-0 text-slate-500">{tp.from}</span><div className="flex min-w-0 items-center gap-1"><span className="truncate font-mono text-slate-700" title={p.from_address}>{p.from_address.slice(0, 8)}...{p.from_address.slice(-6)}</span><CopyButton value={p.from_address} locale={locale} /></div></div>
+                <div className="flex justify-between gap-3"><span className="text-slate-500">{tp.resource}</span><span className="max-w-[65%] truncate font-mono text-slate-700" title={p.resource}>{p.resource}</span></div>
+                <p className="text-xs text-slate-500">{new Date(p.created_at).toLocaleString(locale)}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+        <div className="hidden overflow-x-auto rounded-lg bg-white shadow md:block">
           <table className="min-w-full divide-y divide-slate-200">
             <thead className="bg-slate-50">
               <tr>
@@ -98,6 +122,7 @@ export default async function PaymentsPage() {
             </tbody>
           </table>
         </div>
+        </>
       ) : (
         <div className="bg-white rounded-lg shadow p-8 text-slate-500">{tp.noOrg}</div>
       )}

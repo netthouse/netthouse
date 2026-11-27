@@ -37,7 +37,7 @@ export default function OrgSwitcher({
         value={currentOrgId ?? ""}
         disabled={isPending}
         onChange={(e) => handleChange(e.target.value)}
-        className="w-full px-3 py-2 rounded-md bg-slate-800 text-white text-sm border border-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-500 disabled:opacity-50"
+        className="min-h-11 w-full rounded-md border border-slate-700 bg-slate-800 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-slate-500 disabled:opacity-50"
       >
         {orgs.map((org) => (
           <option key={org.id} value={org.id}>

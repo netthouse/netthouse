@@ -24,7 +24,7 @@ export default async function ApiKeysPage() {
   const t = getDictionary(locale);
 
   if (!userId) {
-    return <div className="p-8 text-slate-500">Not signed in</div>;
+    return <div className="p-4 text-slate-500 sm:p-8">Not signed in</div>;
   }
 
   const currentOrg = await getCurrentOrg();
@@ -48,12 +48,12 @@ export default async function ApiKeysPage() {
   }
 
   return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold mb-6">{t.pages.apiKeys.title}</h1>
+    <div className="mx-auto w-full max-w-6xl p-4 sm:p-6 lg:p-8">
+      <h1 className="mb-5 text-2xl font-bold sm:mb-6">{t.pages.apiKeys.title}</h1>
        {orgId ? (
         <ApiKeyManager userId={userId} orgId={orgId} keys={keys} locale={locale as any} />
       ) : (
-        <div className="bg-white rounded-lg shadow p-8 text-slate-500">
+        <div className="rounded-lg bg-white p-5 text-sm text-slate-500 shadow sm:p-8">
           Select an organization to manage API keys
         </div>
       )}

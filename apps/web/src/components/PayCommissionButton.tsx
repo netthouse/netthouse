@@ -35,12 +35,14 @@ export default function PayCommissionButton({
           paying: "Оплачиваем... Подтвердите в MetaMask",
           done: "Оплачено! Обновляем...",
           noWallet: "MetaMask не найден. Установите расширение.",
+          cancelled: "Оплата отменена в кошельке.",
           error: "Ошибка: ",
         }
       : {
           paying: "Paying... Confirm in MetaMask",
           done: "Paid! Refreshing...",
           noWallet: "MetaMask not found. Install the extension.",
+          cancelled: "Payment was cancelled in the wallet.",
           error: "Error: ",
         };
 
@@ -109,22 +111,27 @@ export default function PayCommissionButton({
       setMessage(L.done);
       setTimeout(() => router.refresh(), 1500);
     } catch (err: any) {
+      if (err?.code === 4001 || /user rejected|user denied/i.test(err?.message ?? "")) {
+        setState("idle");
+        setMessage(L.cancelled);
+        return;
+      }
       setState("error");
       setMessage(L.error + (err?.message ?? String(err)));
     }
   }
 
   return (
-    <div className="mt-4">
+    <div className="mt-4 w-full sm:w-auto">
       <button
         onClick={pay}
         disabled={state === "paying"}
-        className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+        className="min-h-11 w-full rounded bg-blue-600 px-6 py-2 text-white hover:bg-blue-700 disabled:opacity-50 sm:w-auto"
       >
         {state === "paying" ? L.paying : label}
       </button>
       {message && state !== "paying" && (
-        <p className={`mt-2 text-sm ${state === "error" ? "text-red-600" : "text-green-600"}`}>
+        <p className={`mt-2 break-words text-sm ${state === "error" ? "text-red-600" : "text-green-600"}`}>
           {message}
         </p>
       )}

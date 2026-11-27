@@ -152,13 +152,13 @@ export default function TransactionForm({
     <div className="mb-6">
       <button
         onClick={() => setShowForm(!showForm)}
-        className="px-4 py-2 bg-slate-900 text-white rounded-md hover:bg-slate-800 text-sm"
+        className="min-h-11 w-full rounded-md bg-slate-900 px-4 py-2 text-sm text-white hover:bg-slate-800 sm:w-auto"
       >
         {tf.newTransaction}
       </button>
 
       {showForm && (
-        <div className="mt-4 p-4 border border-slate-200 rounded-lg bg-white space-y-4">
+        <div className="mt-4 space-y-4 rounded-lg border border-slate-200 bg-white p-4 sm:p-5">
           <div>
             <label className="block text-xs font-medium text-slate-500 mb-1">{tf.description}</label>
             <input
@@ -171,18 +171,18 @@ export default function TransactionForm({
           </div>
 
           <div className="space-y-2">
-            <div className="grid grid-cols-12 gap-2 text-xs font-medium text-slate-500 uppercase">
+            <div className="hidden grid-cols-12 gap-2 text-xs font-medium uppercase text-slate-500 md:grid">
               <div className="col-span-5">{tf.account}</div>
               <div className="col-span-3">{tf.direction}</div>
               <div className="col-span-3">{tf.amount}</div>
               <div className="col-span-1"></div>
             </div>
             {entries.map((entry, i) => (
-              <div key={i} className="grid grid-cols-12 gap-2 items-center">
+              <div key={i} className="grid grid-cols-1 items-center gap-2 rounded-lg border border-slate-100 p-3 md:grid-cols-12 md:border-0 md:p-0">
                 <select
                   value={entry.accountId}
                   onChange={(e) => updateEntry(i, { accountId: e.target.value })}
-                  className="col-span-5 px-2 py-2 border border-slate-300 rounded-md text-sm"
+                  className="min-h-11 w-full rounded-md border border-slate-300 px-3 py-2 text-sm md:col-span-5 md:px-2"
                 >
                   <option value="">{tf.select}</option>
                   {accounts.map((acc) => (
@@ -196,7 +196,7 @@ export default function TransactionForm({
                   onChange={(e) =>
                     updateEntry(i, { direction: e.target.value as "debit" | "credit" })
                   }
-                  className="col-span-3 px-2 py-2 border border-slate-300 rounded-md text-sm"
+                  className="min-h-11 w-full rounded-md border border-slate-300 px-3 py-2 text-sm md:col-span-3 md:px-2"
                 >
                   <option value="debit">{tf.debitOption}</option>
                   <option value="credit">{tf.creditOption}</option>
@@ -207,13 +207,13 @@ export default function TransactionForm({
                   step="0.01"
                   value={entry.amount}
                   onChange={(e) => updateEntry(i, { amount: e.target.value })}
-                  className="col-span-3 px-2 py-2 border border-slate-300 rounded-md text-sm"
+                  className="min-h-11 w-full rounded-md border border-slate-300 px-3 py-2 text-sm md:col-span-3 md:px-2"
                   placeholder="0.00"
                 />
                 <button
                   onClick={() => removeEntry(i)}
                   disabled={entries.length <= 2}
-                  className="col-span-1 text-red-500 text-sm disabled:opacity-30"
+                  className="min-h-11 w-full rounded-md text-sm text-red-600 hover:bg-red-50 disabled:opacity-30 md:col-span-1 md:w-auto"
                 >
                   ✕
                 </button>
@@ -221,8 +221,8 @@ export default function TransactionForm({
             ))}
           </div>
 
-          <div className="flex items-center justify-between text-sm">
-            <button onClick={addEntry} className="text-slate-600 hover:text-slate-900">
+          <div className="flex flex-col items-start gap-3 text-sm sm:flex-row sm:items-center sm:justify-between">
+            <button onClick={addEntry} className="min-h-11 text-left text-slate-600 hover:text-slate-900">
               {tf.addEntry}
             </button>
             <div className={balanced ? "text-green-600 font-medium" : "text-slate-500"}>
@@ -233,17 +233,17 @@ export default function TransactionForm({
 
           {error && <div className="text-sm text-red-600">{error}</div>}
 
-          <div className="flex gap-2">
+          <div className="flex flex-col gap-2 sm:flex-row">
             <button
               onClick={handleSubmit}
               disabled={isPending}
-              className="px-4 py-2 bg-slate-900 text-white rounded-md hover:bg-slate-800 text-sm disabled:opacity-50"
+              className="min-h-11 w-full rounded-md bg-slate-900 px-4 py-2 text-sm text-white hover:bg-slate-800 disabled:opacity-50 sm:w-auto"
             >
               {isPending ? tf.posting : tf.post}
             </button>
             <button
               onClick={() => setShowForm(false)}
-              className="px-4 py-2 border border-slate-300 rounded-md text-sm hover:bg-slate-100"
+              className="min-h-11 w-full rounded-md border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100 sm:w-auto"
             >
               {t.common.cancel}
             </button>
