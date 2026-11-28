@@ -13,7 +13,7 @@ type NavItem = { href: string; label: string; icon: "home" | "accounts" | "trans
 
 function Icon({ name }: { name: NavItem["icon"] | "menu" | "close" }) {
   const common = {
-    className: "h-5 w-5",
+    className: name === "menu" ? "h-6 w-6" : "h-5 w-5",
     viewBox: "0 0 24 24",
     fill: "none",
     stroke: "currentColor",
@@ -109,9 +109,9 @@ export default function MobileNavigation({
     <>
       <header className="mobile-dashboard-header sticky top-0 z-40 flex h-14 items-center gap-3 border-b border-slate-200 bg-white/95 px-4 backdrop-blur md:hidden">
         <Link href="/" className="shrink-0" aria-label="Netthouse dashboard">
-          <img src="/netthouse-horizontal-white.svg" alt="Netthouse" className="h-7 w-auto brightness-0" />
+          <img src="/netthouse-horizontal-white.svg" alt="Netthouse" className="h-8 w-auto brightness-0" />
         </Link>
-        <div className="min-w-0 flex-1 truncate text-right text-xs font-medium text-slate-600" title={currentOrg?.name ?? t.common.noOrg}>
+        <div className="min-w-0 flex-1 truncate text-right text-sm font-semibold text-slate-600" title={currentOrg?.name ?? t.common.noOrg}>
           {currentOrg?.name ?? t.common.noOrg}
         </div>
         <button
@@ -157,6 +157,10 @@ export default function MobileNavigation({
             <div className="mb-5">
               <OrgSwitcher orgs={orgs} currentOrgId={currentOrgId} locale={locale} />
             </div>
+            <div className="mb-5 border-b border-slate-700 pb-5">
+              <p className="mb-2 text-xs text-slate-400">{locale === "ru" ? "Язык" : "Language"}</p>
+              <LanguageSwitcher locale={locale} />
+            </div>
             <nav aria-label={locale === "ru" ? "Разделы панели" : "Dashboard sections"} className="space-y-1">
               {allRoutes.map((item) => (
                 <Link
@@ -173,10 +177,6 @@ export default function MobileNavigation({
               ))}
             </nav>
 
-            <div className="mt-6 border-t border-slate-700 pt-5">
-              <p className="mb-2 text-xs text-slate-400">{locale === "ru" ? "Язык" : "Language"}</p>
-              <LanguageSwitcher locale={locale} />
-            </div>
             <div className="mt-auto border-t border-slate-700 pt-4">
               <SignOutButton>
                 <button className="min-h-11 w-full rounded-lg px-3 text-left text-sm text-slate-300 hover:bg-slate-800 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">
